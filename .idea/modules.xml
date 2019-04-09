@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/jogl-samples/helper-utils.iml" filepath="$PROJECT_DIR$/jogl-samples/helper-utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/jogl-samples/jogl-samples.iml" filepath="$PROJECT_DIR$/jogl-samples/jogl-samples.iml" />
-      <module fileurl="file://$PROJECT_DIR$/projectmaze/project-maze.iml" filepath="$PROJECT_DIR$/projectmaze/project-maze.iml" />
+      <module fileurl="file://$PROJECT_DIR$/projectmaze/projectmaze.iml" filepath="$PROJECT_DIR$/projectmaze/projectmaze.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jogl-samples/zhelp.iml" filepath="$PROJECT_DIR$/jogl-samples/zhelp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhelper/zhelper.iml" filepath="$PROJECT_DIR$/zhelper/zhelper.iml" />
     </modules>
   </component>
 </project>
