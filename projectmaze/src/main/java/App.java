@@ -13,7 +13,7 @@ public class App {
 
 	public void start(){
 		try {
-			Frame testFrame = new Frame("TestFrame");
+			Frame testFrame = new Frame();
 			testFrame.setSize(512, 384);
 
 			// setup OpenGL Version 2
@@ -48,7 +48,7 @@ public class App {
 					}).start();
 				}
 			});
-	    	testFrame.setTitle(ren.getClass().getName());
+	    	testFrame.setTitle("Maze 2019 - Michal Dolenský");
 	    	testFrame.pack();
 	    	testFrame.setVisible(true);
             animator.start(); // start the animation loop
