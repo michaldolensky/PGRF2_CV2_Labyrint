@@ -60,9 +60,10 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glClearColor(0f, 0f, 0f, 1f);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
+
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        if (per) glu.gluPerspective(45, width / (float) height, 0.1f, 300.0f);
+        if (per) glu.gluPerspective(90, width / (float) height, 0.1f, 500.0f);
         else gl.glOrtho(-40 * width / (float) height, 40 * width / (float) height, -40, 40, 0.1f, 300.0f);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -79,6 +80,24 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glRotated(zenit - 90, 1, 0, 0);
         gl.glRotated(azimut, 0, 0, 1);
 
+
+        //FIXME: temp
+        gl.glBegin(GL2.GL_LINES);
+        gl.glLineWidth(3);
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        gl.glVertex3f(0f, 0f, 0f);
+        gl.glVertex3f(50f, 0f, 0f);
+
+        gl.glColor3f(0.0f, 1.0f, 0.0f);
+        gl.glVertex3f(0f, 0f, 0f);
+        gl.glVertex3f(0f, 50f, 0f);
+
+        gl.glColor3f(0.0f, 0.0f, 1.0f);
+        gl.glVertex3f(0f, 0f, 0f);
+        gl.glVertex3f(0f, 0f, 50f);
+        gl.glEnd();
+
+
         int z = 0;
         for (int[][] level : maze.getLevels()) {
             int size = maze.getSquareSize();
@@ -87,6 +106,7 @@ public class Renderer implements GLEventListener, MouseListener,
                 for (int y = 0; y < level.length; y++) {
                     gl.glBegin(GL2.GL_QUADS);
                     switch (level[x][y]) {
+                        //Hall
                         case 0:
                             gl.glColor3f(0.0f, 0.0f, 1.0f);
                             gl.glVertex3i(x * size, y * size, z);
@@ -94,49 +114,59 @@ public class Renderer implements GLEventListener, MouseListener,
                             gl.glVertex3i(x * size + size, y * size + size, z);
                             gl.glVertex3i(x * size, size * y + size, z);
                             break;
+                        //Wall
                         case 1:
 
-                            gl.glColor3f(0.0f, 1.0f, 0.0f);
+                            //cyan
+                            if (x + 1 < level.length && level[x + 1][y] != 1) {
+                                gl.glColor3f(0.0f, 1.0f, 1.0f);
+                                gl.glVertex3i(size * x + size, y * size, z);
+                                gl.glVertex3i(x * size + size, y * size + size, z);
+                                gl.glVertex3i(x * size + size, y * size + size, z + size);
+                                gl.glVertex3i(size * x + size, y * size, z + size);
+                            }
+                            //magenta
+                            if (x - 1 > -1 && level[x - 1][y] != 1) {
+                                gl.glColor3f(1.0f, 0.0f, 1.0f);
+                                gl.glVertex3i(x * size, y * size, z + size);
+                                gl.glVertex3i(x * size, size * y + size, z + size);
+                                gl.glVertex3i(x * size, size * y + size, z);
+                                gl.glVertex3i(x * size, y * size, z);
+                            }
 
-                            gl.glVertex3i(x * size, y * size, z+size);
-                            gl.glVertex3i(size * x + size, y * size, z);
-                            gl.glVertex3i(size * x + size, y * size, z+size);
-                            gl.glVertex3i(x * size, y * size, z);
 
-//                            gl.glVertex3i(size * x + size, y * size, z+size);
-//                            gl.glVertex3i(x * size + size, y * size + size, z);
-//                            gl.glVertex3i(x * size + size, y * size + size, z+size);
-//                            gl.glVertex3i(size * x + size, y * size, z);
-//
-//                            gl.glVertex3i(x * size, size * y + size, z+size);
-//                            gl.glVertex3i(x * size + size, y * size + size, z);
-//                            gl.glVertex3i(x * size + size, y * size + size, z+size);
-//                            gl.glVertex3i(x * size, size * y + size, z);
-//
-//                            gl.glVertex3i(x * size, y * size, z+size);
-//                            gl.glVertex3i(x * size, size * y + size, z);
-//                            gl.glVertex3i(x * size, size * y + size, z+size);
-//                            gl.glVertex3i(x * size, y * size, z);
+                            //green
+                            if (y - 1 > -1 && level[x][y - 1] != 1) {
+                                gl.glColor3f(0.0f, 1.0f, 0.0f);
 
+                                gl.glVertex3i(x * size, y * size, z);
+                                gl.glVertex3i(size * x + size, y * size, z);
+                                gl.glVertex3i(size * x + size, y * size, z + size);
+                                gl.glVertex3i(x * size, y * size, z + size);
+                            }
+                            //yellow
+                            if (y + 1 < level.length && level[x][y + 1] != 1) {
+                                gl.glColor3f(1.0f, 1.0f, 0.0f);
+                                gl.glVertex3i(x * size, size * y + size, z + size);
+                                gl.glVertex3i(x * size + size, y * size + size, z + size);
+                                gl.glVertex3i(x * size + size, y * size + size, z);
+                                gl.glVertex3i(x * size, size * y + size, z);
+                            }
 
                             //top of wall
                             gl.glColor3f(1.0f, 0.0f, 0.0f);
-                            gl.glVertex3i(x * size, y * size, z+size);
-                            gl.glVertex3i(size * x + size, y * size, z+size);
-                            gl.glVertex3i(x * size + size, y * size + size, z+size);
-                            gl.glVertex3i(x * size, size * y + size, z+size);
-
-
+                            gl.glVertex3i(x * size, y * size, z + size);
+                            gl.glVertex3i(size * x + size, y * size, z + size);
+                            gl.glVertex3i(x * size + size, y * size + size, z + size);
+                            gl.glVertex3i(x * size, size * y + size, z + size);
                             break;
                     }
-
-
 
                     gl.glEnd();
                 }
 
             }
-            z+=maze.getWallHeight();
+            z += maze.getWallHeight();
         }
 
         gl.glColor3f(0.5f, 0.5f, 0.5f);
