@@ -6,9 +6,11 @@ import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 import maze.AbstractMaze;
 import maze.Maze1;
+import transforms.Point3D;
 import utils.OglUtils;
 
 import java.awt.event.*;
+import java.nio.ByteBuffer;
 
 //import com.jogamp.opengl.util.texture.Texture;
 //import com.jogamp.opengl.util.texture.TextureIO;
@@ -97,11 +99,20 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glVertex3f(0f, 0f, 50f);
         gl.glEnd();
 
+        Point3D sP = maze.getStartPosition();
+
+        gl.glColor3f(1, 1, 1);
+
+        glut.glutSolidCube(5);
+        gl.glTranslated(sP.getX()*maze.getSquareSize(), sP.getY()*maze.getSquareSize(), sP.getZ()*maze.getSquareSize());
+
+
+
+
 
         int z = 0;
         for (int[][] level : maze.getLevels()) {
             int size = maze.getSquareSize();
-
             for (int x = 0; x < level.length; x++) {
                 for (int y = 0; y < level.length; y++) {
                     gl.glBegin(GL2.GL_QUADS);
@@ -168,6 +179,10 @@ public class Renderer implements GLEventListener, MouseListener,
             }
             z += maze.getWallHeight();
         }
+
+
+
+
 
         gl.glColor3f(0.5f, 0.5f, 0.5f);
         glut.glutWireCube(50);
