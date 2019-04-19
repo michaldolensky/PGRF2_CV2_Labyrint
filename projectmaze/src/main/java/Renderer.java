@@ -7,10 +7,12 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
+import maze.ColisionTestMaze;
 import maze.Maze1;
 import transforms.Point3D;
 import utils.OglUtils;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -30,15 +32,16 @@ public class Renderer implements GLEventListener, MouseListener,
     GLU glu;
     GLUT glut;
 
-    int width, height, dx, dy, x, y;
+    int width, height, dx = 0, dy = 0;
     int ox, oy;
 
-    float zenit;
-    float azimut;
-    double ex, ey, ez, px, py, pz, cenx, ceny, cenz, ux, uy, uz;
-    float step, rot = 0, trans = 0;
+    float zenit = 0;
+    float azimut = 0;
+    double ex = 1, ey = 1, ez = 0, px = 1, py = 1, pz = 1, ux = 0, uy = 0, uz = 0;
+    float step, trans = 0;
     boolean per = true, free = false, sky = false;
     double a_rad, z_rad;
+    int fovy = 90;
     long oldmils = System.currentTimeMillis();
 
     File file;
@@ -46,7 +49,7 @@ public class Renderer implements GLEventListener, MouseListener,
     float[] m = new float[16];
 
     AbstractMaze maze;
-
+    private String compass = "";
 
     @Override
     public void init(GLAutoDrawable glDrawable) {
@@ -77,7 +80,14 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
 
-        maze = new Maze1();
+//        maze = new Maze1();
+        maze = new ColisionTestMaze();
+        px = maze.getStartPosition().getX();
+        py = maze.getStartPosition().getY();
+        pz = maze.getStartPosition().getZ();
+        ez = 500;
+        ex = -20;
+
 
     }
 
@@ -89,39 +99,33 @@ public class Renderer implements GLEventListener, MouseListener,
         step = (mils - oldmils) / 1000.0f;
 //		float fps = 1000 / (float) (mils - oldmils);
         oldmils = mils;
-        trans = 50 * step;
-//		rot += 360 * step / 10f;
+        trans = 100 * step;
 
         //System.out.println(fps);
 
         // vymazani obrazovky a Z-bufferu
+//        gl.glClearColor(1, 1,1,0);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 
-        if (per)
-            glu.gluPerspective(45, width / (float) height, 0.1f, 5000.0f);
-        else
-            gl.glOrtho(-20 * width / (float) height, 20 * width
-                    / (float) height, -20, 20, 0.1f, 5000.0f);
+        if (per) glu.gluPerspective(45, width / (float) height, 0.1f, 5000.0f);
+        else gl.glOrtho(-20 * width / (float) height, 20 * width / (float) height, -20, 20, 0.1f, 5000.0f);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-        //nenulujeme pohledovou matici, bude se nacitat do m1
 
 
         gl.glPopMatrix();
-
-
         gl.glLoadIdentity();
+
         glu.gluLookAt(px, py, pz, ex + px, ey + py, ez + pz, ux, uy, uz);
 
 
         gl.glPushMatrix();
-
         //FIXME: temp
         gl.glBegin(GL2.GL_LINES);
-        gl.glLineWidth(3);
+        gl.glLineWidth(5);
         gl.glColor3f(1.0f, 0.0f, 0.0f);
         gl.glVertex3f(0f, 0f, 0f);
         gl.glVertex3f(50f, 0f, 0f);
@@ -136,132 +140,124 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glEnd();
         gl.glPopMatrix();
 
-		gl.glPushMatrix();
 
-		Point3D sP = maze.getStartPosition();
-
-		gl.glColor3f(1, 1, 1);
-
-        glut.glutSolidCube(5);
-		gl.glTranslated(sP.getX()*maze.getSquareSize(), sP.getY()*maze.getSquareSize(), sP.getZ()*maze.getSquareSize());
-
+        gl.glPushMatrix();
+        Point3D sP = maze.getStartPosition();
+        gl.glColor3f(1, 1, 1);
+        gl.glTranslated(sP.getX(), sP.getY(), sP.getZ());
+        glut.glutWireCube(5);
         gl.glPopMatrix();
 
         drawMaze(gl);
 
-
-
         gl.glColor3f(1f, 1f, 1f);
-
         String text = this.getClass().getName() + ": [WSAD][lmb] camera";
         if (per)
             text = text + ", [P]ersp ";
         else
             text = text + ", [p]ersp ";
-
         if (free)
-            text = text + ", [F]ree move ";
+            text = text + ", [F]ree ";
         else
-            text = text + ", [f]ree move";
+            text = text + ", [f]ree ";
+
 
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
-        OglUtils.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
+//        OglUtils.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
+
+        OglUtils.drawStr2D(glDrawable, width - 590, 3, String.format("%f|%f|%f||%f|%f|%f||%f|%f|%f", px, py, pz, ex + py, ey + py, ez + pz, ux, uy, uz));
+
+
+//        OglUtils.drawStr2D(glDrawable, frame.getWidth() / 2, height - 20, compass);
+
+
     }
 
-    public void drawMaze(GL2 gl){
+    public void drawMaze(GL2 gl) {
         gl.glPushMatrix();
-        int z = 0;
+        int y = 0;
         for (int[][] level : maze.getLevels()) {
             int size = maze.getSquareSize();
             for (int x = 0; x < level.length; x++) {
-                for (int y = 0; y < level.length; y++) {
+                for (int z = 0; z < level.length; z++) {
                     gl.glBegin(GL2.GL_QUADS);
-                    switch (level[x][y]) {
+                    switch (level[x][z]) {
                         //Hall
                         case 0:
                             gl.glColor3f(0.0f, 0.0f, 1.0f);
-                            gl.glVertex3i(x * size, y * size, z);
-                            gl.glVertex3i(size * x + size, y * size, z);
-                            gl.glVertex3i(x * size + size, y * size + size, z);
-                            gl.glVertex3i(x * size, size * y + size, z);
+                            gl.glVertex3i(x * size, y, z * size);
+                            gl.glVertex3i(size * x + size, y, z * size);
+                            gl.glVertex3i(x * size + size, y, z * size + size);
+                            gl.glVertex3i(x * size, y, size * z + size);
                             break;
                         //Wall
                         case 1:
-
+                            int absAzi = Math.abs((int) azimut);
                             //cyan
-                            if (x + 1 < level.length && level[x + 1][y] != 1) {
+//                            if (!(absAzi >= 270 - fovy / 2 && absAzi <= 270 + fovy / 2)) {
+                            if (x + 1 < level.length && level[x + 1][z] != 1) {
                                 gl.glColor3f(0.0f, 1.0f, 1.0f);
-                                gl.glVertex3i(size * x + size, y * size, z);
-                                gl.glVertex3i(x * size + size, y * size + size, z);
-                                gl.glVertex3i(x * size + size, y * size + size, z + size);
-                                gl.glVertex3i(size * x + size, y * size, z + size);
+                                gl.glVertex3i(size * x + size, y, z * size);
+                                gl.glVertex3i(x * size + size, y, z * size + size);
+                                gl.glVertex3i(x * size + size, y + size, z * size + size);
+                                gl.glVertex3i(size * x + size, y + size, z * size);
                             }
+//                            }
                             //magenta
-                            if (x - 1 > -1 && level[x - 1][y] != 1) {
+//                            if (!(absAzi >= 90 - fovy / 2 && absAzi <= 90 + fovy / 2)) {
+                            if (x - 1 > -1 && level[x - 1][z] != 1) {
                                 gl.glColor3f(1.0f, 0.0f, 1.0f);
-                                gl.glVertex3i(x * size, y * size, z + size);
-                                gl.glVertex3i(x * size, size * y + size, z + size);
-                                gl.glVertex3i(x * size, size * y + size, z);
-                                gl.glVertex3i(x * size, y * size, z);
+                                gl.glVertex3i(x * size, y + size, z * size);
+                                gl.glVertex3i(x * size, y + size, z * size + size);
+                                gl.glVertex3i(x * size, y, z * size + size);
+                                gl.glVertex3i(x * size, y, z * size);
                             }
+//                            }
                             //green
-                            if (y - 1 > -1 && level[x][y - 1] != 1) {
+//                            if (!(absAzi >= -fovy / 2 && absAzi <= fovy / 2)) {
+                            if (z - 1 > -1 && level[x][z - 1] != 1) {
                                 gl.glColor3f(0.0f, 1.0f, 0.0f);
-
-                                gl.glVertex3i(x * size, y * size, z);
-                                gl.glVertex3i(size * x + size, y * size, z);
-                                gl.glVertex3i(size * x + size, y * size, z + size);
-                                gl.glVertex3i(x * size, y * size, z + size);
+                                gl.glVertex3i(x * size, y, z * size);
+                                gl.glVertex3i(size * x + size, y, z * size);
+                                gl.glVertex3i(size * x + size, y + size, z * size);
+                                gl.glVertex3i(x * size, y + size, z * size);
                             }
+//                            }
                             //yellow
-                            if (y + 1 < level.length && level[x][y + 1] != 1) {
+//                            if (!(absAzi >= 180 - fovy / 2 && absAzi <= 180 + fovy / 2)) {
+                            if (z + 1 < level.length && level[x][z + 1] != 1) {
                                 gl.glColor3f(1.0f, 1.0f, 0.0f);
-                                gl.glVertex3i(x * size, size * y + size, z + size);
-                                gl.glVertex3i(x * size + size, y * size + size, z + size);
-                                gl.glVertex3i(x * size + size, y * size + size, z);
-                                gl.glVertex3i(x * size, size * y + size, z);
+                                gl.glVertex3i(x * size, y + size, z * size + size);
+                                gl.glVertex3i(x * size + size, y + size, z * size + size);
+                                gl.glVertex3i(x * size + size, y, z * size + size);
+                                gl.glVertex3i(x * size, y, z * size + size);
                             }
-
+//                            }
                             //top of wall
                             gl.glColor3f(1.0f, 0.0f, 0.0f);
-                            gl.glVertex3i(x * size, y * size, z + size);
-                            gl.glVertex3i(size * x + size, y * size, z + size);
-                            gl.glVertex3i(x * size + size, y * size + size, z + size);
-                            gl.glVertex3i(x * size, size * y + size, z + size);
+                            gl.glVertex3i(x * size, y + size, z * size);
+                            gl.glVertex3i(size * x + size, y + size, z * size);
+                            gl.glVertex3i(x * size + size, y + size, z * size + size);
+                            gl.glVertex3i(x * size, y + size, z * size + size);
                             break;
                     }
 
                     gl.glEnd();
                 }
-
             }
-            z += maze.getWallHeight();
+            y += maze.getWallHeight();
         }
         gl.glPopMatrix();
     }
 
-
-
     @Override
-    public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-                        int height) {
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL2 gl = drawable.getGL().getGL2();
         this.width = width;
         this.height = height;
         gl.glViewport(0, 0, this.width, this.height);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -271,11 +267,6 @@ public class Renderer implements GLEventListener, MouseListener,
         oy = e.getY();
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-        }
-    }
 
     @Override
     public void mouseDragged(MouseEvent e) {
@@ -285,10 +276,8 @@ public class Renderer implements GLEventListener, MouseListener,
         oy = e.getY();
 
         zenit -= dy;
-        if (zenit > 90)
-            zenit = 90;
-        if (zenit <= -90)
-            zenit = -90;
+        if (zenit > 90) zenit = 90;
+        if (zenit <= -90) zenit = -90;
         azimut -= dx;
         azimut = azimut % 360;
         a_rad = -1 * azimut * Math.PI / 180;
@@ -300,40 +289,93 @@ public class Renderer implements GLEventListener, MouseListener,
         uy = Math.sin(z_rad + Math.PI / 2);
         uz = -Math.cos(a_rad) * Math.cos(z_rad + Math.PI / 2);
 
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
+//        System.out.println("azimut = " + azimut);
+//        if (azimut >= -fovy / 2.0 && azimut <= fovy / 2.0) {
+//            compass = "N";
+//        }
+//        if (azimut >= 90 - fovy / 2.0 && azimut <= 90 + fovy / 2.0) {
+//            compass = "E";
+//        }
+//        if (azimut >= 180 - fovy / 2.0 && azimut <= 180 + fovy / 2.0) {
+//            compass = "S";
+//        }
+//        if (azimut >= 270 - fovy / 2.0 && azimut <= 270 + fovy / 2.0) {
+//            compass = "W";
+//        }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
-
-            px += ex * trans;
-            py += ey * trans;
-            pz += ez * trans;
-
+            if (free) {
+                px += ex * trans;
+                py += ey * trans;
+                pz += ez * trans;
+            } else {
+                double kpx = px + ex * trans;
+                double kpz = pz + ez * trans;
+                test(kpx, kpz);
+            }
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
-
-            px -= ex * trans;
-            py -= ey * trans;
-            pz -= ez * trans;
-
+            if (free) {
+                px -= ex * trans;
+                py -= ey * trans;
+                pz -= ez * trans;
+            } else {
+                double kpx = px - ex * trans;
+                double kpz = pz - ez * trans;
+                test(kpx, kpz);
+            }
         }
         if (e.getKeyCode() == KeyEvent.VK_A) {
-            pz -= Math.cos(a_rad - Math.PI / 2) * trans;
-            px += Math.sin(a_rad - Math.PI / 2) * trans;
-
+            if (free) {
+                px += Math.sin(a_rad - Math.PI / 2) * trans;
+                pz -= Math.cos(a_rad - Math.PI / 2) * trans;
+            } else {
+                double kpx = px + Math.sin(a_rad - Math.PI / 2) * trans;
+                double kpz = pz - Math.cos(a_rad - Math.PI / 2) * trans;
+                test(kpx, kpz);
+            }
         }
         if (e.getKeyCode() == KeyEvent.VK_D) {
-
-            pz += Math.cos(a_rad - Math.PI / 2) * trans;
-            px -= Math.sin(a_rad - Math.PI / 2) * trans;
-
+            if (free) {
+                px += Math.sin(a_rad - Math.PI / 2) * trans;
+                pz -= Math.cos(a_rad - Math.PI / 2) * trans;
+            } else {
+                double kpx = px - Math.sin(a_rad - Math.PI / 2) * trans;
+                double kpz = pz + Math.cos(a_rad - Math.PI / 2) * trans;
+                test(kpx, kpz);
+            }
         }
 
+    }
+
+    public void test(double x, double z) {
+        double posX = x / maze.getSquareSize();
+        double posZ = z / maze.getSquareSize();
+        double curPosX = px / maze.getSquareSize();
+        double curPosZ = pz / maze.getSquareSize();
+
+        System.out.println("-----");
+        System.out.println("posX = " + posX);
+        System.out.println("posZ = " + posZ);
+        System.out.println("curPosX = " + curPosX);
+        System.out.println("curPosZ = " + curPosZ);
+        System.out.println("maze.getLevels().get(0)[posX][posZ] = " + maze.getLevels().get(0)[(int)posX][(int)posZ]);
+        if (!(maze.getLevels().get(0)[(int)posX][(int)posZ] == 1)) {
+            px = x;
+            pz = z;
+            return;
+        }
+        //fixme
+        if (!(maze.getLevels().get(0)[(int)curPosX][(int)posZ] == 1)) {
+            px=posX;
+            return;
+        }
+        if (!(maze.getLevels().get(0)[(int)posX][(int)curPosZ] == 1)) {
+            pz=posZ;
+        }
     }
 
     @Override
@@ -352,6 +394,10 @@ public class Renderer implements GLEventListener, MouseListener,
     }
 
     @Override
+    public void mouseMoved(MouseEvent e) {
+    }
+
+    @Override
     public void keyTyped(KeyEvent e) {
     }
 
@@ -359,4 +405,21 @@ public class Renderer implements GLEventListener, MouseListener,
     public void dispose(GLAutoDrawable drawable) {
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+        }
+    }
 }
