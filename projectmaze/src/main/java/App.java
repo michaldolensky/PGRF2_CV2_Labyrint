@@ -13,8 +13,8 @@ public class App {
 
 	public void start(){
 		try {
-			Frame testFrame = new Frame();
-			testFrame.setSize(512, 384);
+			Frame frame = new Frame();
+			frame.setSize(512, 384);
 
 
 			// setup OpenGL Version 2
@@ -39,10 +39,10 @@ public class App {
 	    	canvas.setSize( 512, 384 );
 	    	
 	    	
-	    	testFrame.add(canvas);
+	    	frame.add(canvas);
 			
 
-	    	testFrame.addWindowListener(new WindowAdapter() {
+	    	frame.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
 					new Thread(() -> {
@@ -52,9 +52,9 @@ public class App {
 					}).start();
 				}
 			});
-	    	testFrame.setTitle("Maze 2019 - Michal Dolenský");
-	    	testFrame.pack();
-	    	testFrame.setVisible(true);
+	    	frame.setTitle("Maze 2019 - Michal Dolenský");
+	    	frame.pack();
+	    	frame.setVisible(true);
             animator.start(); // start the animation loop
             
             
