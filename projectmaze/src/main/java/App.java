@@ -16,6 +16,7 @@ public class App {
 			Frame testFrame = new Frame();
 			testFrame.setSize(512, 384);
 
+
 			// setup OpenGL Version 2
 	    	GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    	GLCapabilities capabilities = new GLCapabilities(profile);
@@ -27,7 +28,10 @@ public class App {
 
 	    	// The canvas is the widget that's drawn in the JFrame
 	    	GLCanvas canvas = new GLCanvas(capabilities);
-	    	Renderer ren = new Renderer();
+			final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
+
+			TestRenderer ren = new TestRenderer();
+//			Renderer ren = new Renderer(animator);
 			canvas.addGLEventListener(ren);
 			canvas.addMouseListener(ren);
 			canvas.addMouseMotionListener(ren);
@@ -37,14 +41,14 @@ public class App {
 	    	
 	    	testFrame.add(canvas);
 			
-	        final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
-	    	 
+
 	    	testFrame.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
 					new Thread(() -> {
 					   if (animator.isStarted()) animator.stop();
 					   System.exit(0);
+						System.out.println(animator.getFPS());
 					}).start();
 				}
 			});

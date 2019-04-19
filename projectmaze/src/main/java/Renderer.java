@@ -3,6 +3,7 @@ import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.gl2.GLUT;
 import maze.AbstractMaze;
 import maze.Maze1;
@@ -35,7 +36,13 @@ public class Renderer implements GLEventListener, MouseListener,
 
     boolean per = true, clip = true, anim = true;
 
+    FPSAnimator animator;
+
     AbstractMaze maze;
+
+    public Renderer(FPSAnimator animator) {
+        this.animator = animator;
+    }
 
     @Override
     public void init(GLAutoDrawable glDrawable) {
@@ -58,6 +65,10 @@ public class Renderer implements GLEventListener, MouseListener,
     public void display(GLAutoDrawable glDrawable) {
         GL2 gl = glDrawable.getGL().getGL2();
 
+//        gl.glColor3f(1f, 1f, 1f);
+//        OglUtils.drawStr2D(glDrawable, width-90, 3, new Integer(animator.getFPS()).toString());
+//
+//        System.out.println(animator.getFPS());
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glClearColor(0f, 0f, 0f, 1f);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
@@ -82,6 +93,7 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glRotated(zenit - 90, 1, 0, 0);
         gl.glRotated(azimut, 0, 0, 1);
 
+        gl.glPushMatrix();
 
         //FIXME: temp
         gl.glBegin(GL2.GL_LINES);
@@ -99,6 +111,10 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glVertex3f(0f, 0f, 50f);
         gl.glEnd();
 
+        gl.glPopMatrix();
+
+        gl.glPushMatrix();
+
         Point3D sP = maze.getStartPosition();
 
         gl.glColor3f(1, 1, 1);
@@ -106,10 +122,10 @@ public class Renderer implements GLEventListener, MouseListener,
         glut.glutSolidCube(5);
         gl.glTranslated(sP.getX()*maze.getSquareSize(), sP.getY()*maze.getSquareSize(), sP.getZ()*maze.getSquareSize());
 
+        gl.glPopMatrix();
 
 
-
-
+        gl.glPushMatrix();
         int z = 0;
         for (int[][] level : maze.getLevels()) {
             int size = maze.getSquareSize();
@@ -144,8 +160,6 @@ public class Renderer implements GLEventListener, MouseListener,
                                 gl.glVertex3i(x * size, size * y + size, z);
                                 gl.glVertex3i(x * size, y * size, z);
                             }
-
-
                             //green
                             if (y - 1 > -1 && level[x][y - 1] != 1) {
                                 gl.glColor3f(0.0f, 1.0f, 0.0f);
@@ -179,13 +193,15 @@ public class Renderer implements GLEventListener, MouseListener,
             }
             z += maze.getWallHeight();
         }
+        gl.glPopMatrix();
 
 
 
 
-
+        gl.glPushMatrix();
         gl.glColor3f(0.5f, 0.5f, 0.5f);
         glut.glutWireCube(50);
+        gl.glPopMatrix();
 
 
     }
