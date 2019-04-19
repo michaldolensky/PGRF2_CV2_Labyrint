@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class App {
-	private static final int FPS = 60; // animator's target frames per second
+	private static final int FPS = 120; // animator's target frames per second
 
 	public void start(){
 		try {
@@ -30,7 +30,7 @@ public class App {
 	    	GLCanvas canvas = new GLCanvas(capabilities);
 			final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
-			TestRenderer ren = new TestRenderer();
+			Renderer ren = new Renderer();
 //			Renderer ren = new Renderer(animator);
 			canvas.addGLEventListener(ren);
 			canvas.addMouseListener(ren);

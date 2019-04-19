@@ -1,24 +1,25 @@
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.util.FPSAnimator;
+import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
 import maze.Maze1;
 import transforms.Point3D;
 import utils.OglUtils;
 
 import java.awt.event.*;
-import java.nio.ByteBuffer;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-//import com.jogamp.opengl.util.texture.Texture;
-//import com.jogamp.opengl.util.texture.TextureIO;
 
 /**
  * trida pro zobrazeni sceny v OpenGL:
- * modelovani pomoci Push a Pop, orezani clipovou rovinou, zobrazovaci seznam
+ * kamera, skybox
  *
  * @author PGRF FIM UHK
  * @version 2015
@@ -29,69 +30,92 @@ public class Renderer implements GLEventListener, MouseListener,
     GLU glu;
     GLUT glut;
 
-    int width, height, dx = 0, dy = 0;
+    int width, height, dx, dy, x, y;
     int ox, oy;
 
-    double azimut = 180, zenit = 0;
+    float zenit;
+    float azimut;
+    double ex, ey, ez, px, py, pz, cenx, ceny, cenz, ux, uy, uz;
+    float step, rot = 0, trans = 0;
+    boolean per = true, free = false, sky = false;
+    double a_rad, z_rad;
+    long oldmils = System.currentTimeMillis();
 
-    boolean per = true, clip = true, anim = true;
-
-    FPSAnimator animator;
+    File file;
+    Texture texture;
+    float[] m = new float[16];
 
     AbstractMaze maze;
 
-    public Renderer(FPSAnimator animator) {
-        this.animator = animator;
-    }
 
     @Override
     public void init(GLAutoDrawable glDrawable) {
-
         GL2 gl = glDrawable.getGL().getGL2();
         glu = new GLU();
         glut = new GLUT();
 
         gl.glEnable(GL2.GL_DEPTH_TEST);
-        gl.glFrontFace(GL2.GL_CCW);
         gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
-        gl.glPolygonMode(GL2.GL_BACK, GL2.GL_LINE);
+        gl.glPolygonMode(GL2.GL_BACK, GL2.GL_FILL);
 
-        OglUtils.printOGLparameters(gl);
+//        OglUtils.printOGLparameters(gl);
+
+        System.out.println("Loading texture...");
+        InputStream is = getClass().getResourceAsStream("/11.jpg"); // vzhledem k adresari res v projektu
+        if (is == null)
+            System.out.println("File not found");
+        else
+            try {
+                texture = TextureIO.newTexture(is, true, "jpg");
+            } catch (IOException e) {
+                System.err.println("Chyba cteni souboru s texturou");
+            }
+
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
 
         maze = new Maze1();
+
     }
 
     @Override
     public void display(GLAutoDrawable glDrawable) {
         GL2 gl = glDrawable.getGL().getGL2();
 
-//        gl.glColor3f(1f, 1f, 1f);
-//        OglUtils.drawStr2D(glDrawable, width-90, 3, new Integer(animator.getFPS()).toString());
-//
-//        System.out.println(animator.getFPS());
-        gl.glEnable(GL2.GL_DEPTH_TEST);
-        gl.glClearColor(0f, 0f, 0f, 1f);
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+        long mils = System.currentTimeMillis();
+        step = (mils - oldmils) / 1000.0f;
+//		float fps = 1000 / (float) (mils - oldmils);
+        oldmils = mils;
+        trans = 50 * step;
+//		rot += 360 * step / 10f;
 
+        //System.out.println(fps);
+
+        // vymazani obrazovky a Z-bufferu
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        if (per) glu.gluPerspective(90, width / (float) height, 0.1f, 500.0f);
-        else gl.glOrtho(-40 * width / (float) height, 40 * width / (float) height, -40, 40, 0.1f, 300.0f);
+
+        if (per)
+            glu.gluPerspective(45, width / (float) height, 0.1f, 5000.0f);
+        else
+            gl.glOrtho(-20 * width / (float) height, 20 * width
+                    / (float) height, -20, 20, 0.1f, 5000.0f);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
+        //nenulujeme pohledovou matici, bude se nacitat do m1
 
-        zenit += dy;
-        dy = 0;
-        if (zenit > 90) zenit = 90;
-        if (zenit < -90) zenit = -90;
-        azimut += dx;
-        dx = 0;
-        azimut = azimut % 360;
-        gl.glTranslatef(0f, 0f, -300f);
-        gl.glRotated(zenit - 90, 1, 0, 0);
-        gl.glRotated(azimut, 0, 0, 1);
+
+        gl.glPopMatrix();
+
+
+        gl.glLoadIdentity();
+        glu.gluLookAt(px, py, pz, ex + px, ey + py, ez + pz, ux, uy, uz);
+
 
         gl.glPushMatrix();
 
@@ -110,21 +134,41 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glVertex3f(0f, 0f, 0f);
         gl.glVertex3f(0f, 0f, 50f);
         gl.glEnd();
-
         gl.glPopMatrix();
 
-        gl.glPushMatrix();
+		gl.glPushMatrix();
 
-        Point3D sP = maze.getStartPosition();
+		Point3D sP = maze.getStartPosition();
 
-        gl.glColor3f(1, 1, 1);
+		gl.glColor3f(1, 1, 1);
 
         glut.glutSolidCube(5);
-        gl.glTranslated(sP.getX()*maze.getSquareSize(), sP.getY()*maze.getSquareSize(), sP.getZ()*maze.getSquareSize());
+		gl.glTranslated(sP.getX()*maze.getSquareSize(), sP.getY()*maze.getSquareSize(), sP.getZ()*maze.getSquareSize());
 
         gl.glPopMatrix();
 
+        drawMaze(gl);
 
+
+
+        gl.glColor3f(1f, 1f, 1f);
+
+        String text = this.getClass().getName() + ": [WSAD][lmb] camera";
+        if (per)
+            text = text + ", [P]ersp ";
+        else
+            text = text + ", [p]ersp ";
+
+        if (free)
+            text = text + ", [F]ree move ";
+        else
+            text = text + ", [f]ree move";
+
+        OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
+        OglUtils.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
+    }
+
+    public void drawMaze(GL2 gl){
         gl.glPushMatrix();
         int z = 0;
         for (int[][] level : maze.getLevels()) {
@@ -194,23 +238,14 @@ public class Renderer implements GLEventListener, MouseListener,
             z += maze.getWallHeight();
         }
         gl.glPopMatrix();
-
-
-
-
-        gl.glPushMatrix();
-        gl.glColor3f(0.5f, 0.5f, 0.5f);
-        glut.glutWireCube(50);
-        gl.glPopMatrix();
-
-
     }
 
 
+
     @Override
-    public void reshape(GLAutoDrawable glDrawable, int x, int y, int width,
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width,
                         int height) {
-        GL2 gl = glDrawable.getGL().getGL2();
+        GL2 gl = drawable.getGL().getGL2();
         this.width = width;
         this.height = height;
         gl.glViewport(0, 0, this.width, this.height);
@@ -248,6 +283,23 @@ public class Renderer implements GLEventListener, MouseListener,
         dy = e.getY() - oy;
         ox = e.getX();
         oy = e.getY();
+
+        zenit -= dy;
+        if (zenit > 90)
+            zenit = 90;
+        if (zenit <= -90)
+            zenit = -90;
+        azimut -= dx;
+        azimut = azimut % 360;
+        a_rad = -1 * azimut * Math.PI / 180;
+        z_rad = zenit * Math.PI / 180;
+        ex = Math.sin(a_rad) * Math.cos(z_rad);
+        ey = Math.sin(z_rad);
+        ez = -Math.cos(a_rad) * Math.cos(z_rad);
+        ux = Math.sin(a_rad) * Math.cos(z_rad + Math.PI / 2);
+        uy = Math.sin(z_rad + Math.PI / 2);
+        uz = -Math.cos(a_rad) * Math.cos(z_rad + Math.PI / 2);
+
     }
 
     @Override
@@ -256,21 +308,45 @@ public class Renderer implements GLEventListener, MouseListener,
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // switch (e.getKeyCode()) {
-        // }
+        if (e.getKeyCode() == KeyEvent.VK_W) {
+
+            px += ex * trans;
+            py += ey * trans;
+            pz += ez * trans;
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_S) {
+
+            px -= ex * trans;
+            py -= ey * trans;
+            pz -= ez * trans;
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_A) {
+            pz -= Math.cos(a_rad - Math.PI / 2) * trans;
+            px += Math.sin(a_rad - Math.PI / 2) * trans;
+
+        }
+        if (e.getKeyCode() == KeyEvent.VK_D) {
+
+            pz += Math.cos(a_rad - Math.PI / 2) * trans;
+            px -= Math.sin(a_rad - Math.PI / 2) * trans;
+
+        }
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_F:
+                free = !free;
+                break;
             case KeyEvent.VK_P:
                 per = !per;
                 break;
-            case KeyEvent.VK_A:
-                anim = !anim;
-                break;
-            case KeyEvent.VK_C:
-                clip = !clip;
+            case KeyEvent.VK_K:
+                sky = !sky;
                 break;
         }
     }
@@ -280,6 +356,7 @@ public class Renderer implements GLEventListener, MouseListener,
     }
 
     @Override
-    public void dispose(GLAutoDrawable arg0) {
+    public void dispose(GLAutoDrawable drawable) {
     }
+
 }
