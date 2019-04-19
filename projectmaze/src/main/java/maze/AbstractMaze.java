@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbstractMaze {
-    protected int squareSize = 20;
+    protected int squareSize = 40;
     protected int wallHeight = 100;
     protected Point3D startPosition;
     protected List<int[][]> levels = new ArrayList();
@@ -25,6 +25,6 @@ public class AbstractMaze {
     }
 
     public Point3D getStartPosition() {
-        return startPosition;
+        return startPosition.mul(squareSize);
     }
 }

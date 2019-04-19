@@ -31,6 +31,6 @@ public class Maze1 extends AbstractMaze {
     public Maze1() {
         getLevels().add(level0);
         getLevels().add(level1);
-        startPosition = new Point3D(-1.5,-1.5,-0.5);
+        startPosition = new Point3D(1.5,1.5,0.5);
     }
 }
