@@ -23,8 +23,7 @@ import java.io.InputStream;
  * @author PGRF FIM UHK
  * @version 2015
  */
-public class Renderer implements GLEventListener, MouseListener,
-        MouseMotionListener, KeyListener {
+public class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
 
     GLU glu;
     GLUT glut;
@@ -36,19 +35,17 @@ public class Renderer implements GLEventListener, MouseListener,
     float azimut = 0;
     double px, py, pz, ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
     float step, trans = 0;
-    boolean per = true, free = false, sky = false;
+    boolean per = true, free = false;
     double a_rad, z_rad;
-    int fovy = 90;
     long oldmils = System.currentTimeMillis();
 
     File file;
     Texture texture;
-    float[] m = new float[16];
 
     AbstractMaze maze;
     private String compass = "";
 
-    final int COLISION_SIZE = 5;
+    final int COLLISION_SIZE = 5;
 
 
     @Override
@@ -91,15 +88,14 @@ public class Renderer implements GLEventListener, MouseListener,
         GL2 gl = glDrawable.getGL().getGL2();
 
         long mils = System.currentTimeMillis();
-        step = (mils - oldmils) / 1000.0f;
+        step = (mils - oldmils);
 //		float fps = 1000 / (float) (mils - oldmils);
         oldmils = mils;
-        trans = 100 * step;
+        trans = 0.25f * step;
 
         //System.out.println(fps);
 
         // vymazani obrazovky a Z-bufferu
-//        gl.glClearColor(1, 1,1,0);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
@@ -355,14 +351,14 @@ public class Renderer implements GLEventListener, MouseListener,
         double curPosZ = pz / maze.getSquareSize();
 
         if (posZ - curPosZ > 0) {
-            posZ = (z + COLISION_SIZE) / maze.getSquareSize();
-        } else posZ = (z - COLISION_SIZE) / maze.getSquareSize();
+            posZ = (z + COLLISION_SIZE) / maze.getSquareSize();
+        } else posZ = (z - COLLISION_SIZE) / maze.getSquareSize();
         if (maze.getLevels().get(0)[(int) posX][(int) posZ] != 1) pz = z;
 
         posZ = z / maze.getSquareSize();
         if (posX - curPosX > 0) {
-            posX = (x + COLISION_SIZE) / maze.getSquareSize();
-        } else posX = (x - COLISION_SIZE) / maze.getSquareSize();
+            posX = (x + COLLISION_SIZE) / maze.getSquareSize();
+        } else posX = (x - COLLISION_SIZE) / maze.getSquareSize();
         if (maze.getLevels().get(0)[(int) posX][(int) posZ] != 1) px = x;
 
 //        System.out.println("-----");
