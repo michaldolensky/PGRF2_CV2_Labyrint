@@ -37,7 +37,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
     float zenit = 0;
     float azimut = 0;
-    double ex = 1, ey = 1, ez = 0, px = 1, py = 1, pz = 1, ux = 0, uy = 0, uz = 0;
+    double px, py, pz, ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
     float step, trans = 0;
     boolean per = true, free = false, sky = false;
     double a_rad, z_rad;
@@ -88,10 +88,6 @@ public class Renderer implements GLEventListener, MouseListener,
         px = maze.getStartPosition().getX();
         py = maze.getStartPosition().getY();
         pz = maze.getStartPosition().getZ();
-        ez = 500;
-        ex = -20;
-
-
     }
 
     @Override
@@ -155,14 +151,10 @@ public class Renderer implements GLEventListener, MouseListener,
 
         gl.glColor3f(1f, 1f, 1f);
         String text = this.getClass().getName() + ": [WSAD][lmb] camera";
-        if (per)
-            text = text + ", [P]ersp ";
-        else
-            text = text + ", [p]ersp ";
-        if (free)
-            text = text + ", [F]ree ";
-        else
-            text = text + ", [f]ree ";
+        if (per) text = text + ", [P]ersp ";
+        else text = text + ", [p]ersp ";
+        if (free) text = text + ", [F]ree ";
+        else text = text + ", [f]ree ";
 
 
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
@@ -264,8 +256,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-        }
+        if (e.getButton() == MouseEvent.BUTTON1) ;
         ox = e.getX();
         oy = e.getY();
     }
@@ -389,9 +380,6 @@ public class Renderer implements GLEventListener, MouseListener,
                 break;
             case KeyEvent.VK_P:
                 per = !per;
-                break;
-            case KeyEvent.VK_K:
-                sky = !sky;
                 break;
         }
     }
