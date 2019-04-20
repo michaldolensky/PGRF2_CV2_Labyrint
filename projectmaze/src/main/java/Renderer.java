@@ -340,8 +340,8 @@ public class Renderer implements GLEventListener, MouseListener,
         }
         if (e.getKeyCode() == KeyEvent.VK_D) {
             if (free) {
-                px += Math.sin(a_rad - Math.PI / 2) * trans;
-                pz -= Math.cos(a_rad - Math.PI / 2) * trans;
+                px -= Math.sin(a_rad - Math.PI / 2) * trans;
+                pz += Math.cos(a_rad - Math.PI / 2) * trans;
             } else {
                 double kpx = px - Math.sin(a_rad - Math.PI / 2) * trans;
                 double kpz = pz + Math.cos(a_rad - Math.PI / 2) * trans;
