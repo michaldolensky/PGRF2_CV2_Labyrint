@@ -51,6 +51,9 @@ public class Renderer implements GLEventListener, MouseListener,
     AbstractMaze maze;
     private String compass = "";
 
+    final int COLISION_SIZE = 5;
+
+
     @Override
     public void init(GLAutoDrawable glDrawable) {
         GL2 gl = glDrawable.getGL().getGL2();
@@ -314,7 +317,7 @@ public class Renderer implements GLEventListener, MouseListener,
             } else {
                 double kpx = px + ex * trans;
                 double kpz = pz + ez * trans;
-                test(kpx, kpz);
+                detectColision(kpx, kpz);
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
@@ -325,7 +328,7 @@ public class Renderer implements GLEventListener, MouseListener,
             } else {
                 double kpx = px - ex * trans;
                 double kpz = pz - ez * trans;
-                test(kpx, kpz);
+                detectColision(kpx, kpz);
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_A) {
@@ -335,7 +338,7 @@ public class Renderer implements GLEventListener, MouseListener,
             } else {
                 double kpx = px + Math.sin(a_rad - Math.PI / 2) * trans;
                 double kpz = pz - Math.cos(a_rad - Math.PI / 2) * trans;
-                test(kpx, kpz);
+                detectColision(kpx, kpz);
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_D) {
@@ -345,37 +348,37 @@ public class Renderer implements GLEventListener, MouseListener,
             } else {
                 double kpx = px - Math.sin(a_rad - Math.PI / 2) * trans;
                 double kpz = pz + Math.cos(a_rad - Math.PI / 2) * trans;
-                test(kpx, kpz);
+                detectColision(kpx, kpz);
             }
         }
 
     }
 
-    public void test(double x, double z) {
+    public void detectColision(double x, double z) {
         double posX = x / maze.getSquareSize();
         double posZ = z / maze.getSquareSize();
         double curPosX = px / maze.getSquareSize();
         double curPosZ = pz / maze.getSquareSize();
 
-        System.out.println("-----");
-        System.out.println("posX = " + posX);
-        System.out.println("posZ = " + posZ);
-        System.out.println("curPosX = " + curPosX);
-        System.out.println("curPosZ = " + curPosZ);
-        System.out.println("maze.getLevels().get(0)[posX][posZ] = " + maze.getLevels().get(0)[(int)posX][(int)posZ]);
-        if (!(maze.getLevels().get(0)[(int)posX][(int)posZ] == 1)) {
-            px = x;
-            pz = z;
-            return;
-        }
-        //fixme
-        if (!(maze.getLevels().get(0)[(int)curPosX][(int)posZ] == 1)) {
-            px=posX;
-            return;
-        }
-        if (!(maze.getLevels().get(0)[(int)posX][(int)curPosZ] == 1)) {
-            pz=posZ;
-        }
+        if (posZ - curPosZ > 0) {
+            posZ = (z + COLISION_SIZE) / maze.getSquareSize();
+        } else posZ = (z - COLISION_SIZE) / maze.getSquareSize();
+        if (maze.getLevels().get(0)[(int) posX][(int) posZ] != 1) pz = z;
+
+        posZ = z / maze.getSquareSize();
+        if (posX - curPosX > 0) {
+            posX = (x + COLISION_SIZE) / maze.getSquareSize();
+        } else posX = (x - COLISION_SIZE) / maze.getSquareSize();
+        if (maze.getLevels().get(0)[(int) posX][(int) posZ] != 1) px = x;
+
+//        System.out.println("-----");
+//        System.out.println("posX - curPosX = " + (posX - curPosX));
+//        System.out.println("posZ - curPosZ = " + (posZ - curPosZ));
+//        System.out.println("posX = " + posX);
+//        System.out.println("posZ = " + posZ);
+//        System.out.println("curPosX = " + curPosX);
+//        System.out.println("curPosZ = " + curPosZ);
+//        System.out.println("maze.getLevels().get(0)[posX][posZ] = " + maze.getLevels().get(0)[(int) posX][(int) posZ]);
     }
 
     @Override
