@@ -2,17 +2,14 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
-import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
-import maze.ColisionTestMaze;
 import maze.Maze1;
 import transforms.Point3D;
 import utils.OglUtils;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -83,8 +80,7 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
 
-//        maze = new Maze1();
-        maze = new ColisionTestMaze();
+        maze = new Maze1();
         px = maze.getStartPosition().getX();
         py = maze.getStartPosition().getY();
         pz = maze.getStartPosition().getZ();
@@ -145,6 +141,13 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glColor3f(1, 1, 1);
         gl.glTranslated(sP.getX(), sP.getY(), sP.getZ());
         glut.glutWireCube(5);
+        gl.glPopMatrix();
+
+        //player pos
+        gl.glPushMatrix();
+        gl.glColor3f(1, 0, 0);
+        gl.glTranslated(px, py - 18, pz);
+        glut.glutSolidCube(1);
         gl.glPopMatrix();
 
         drawMaze(gl);
