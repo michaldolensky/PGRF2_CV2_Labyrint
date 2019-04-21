@@ -1,19 +1,27 @@
+import blocks.Hall;
+import blocks.Wall;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.glu.GLUquadric;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
 import maze.Maze1;
 import transforms.Point3D;
+import transforms.Vec3D;
+import utils.LoadTexture;
 import utils.OglUtils;
 
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -47,6 +55,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     final int COLLISION_SIZE = 5;
 
+    GLUquadric quadratic;
+
 
     @Override
     public void init(GLAutoDrawable glDrawable) {
@@ -54,28 +64,62 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         glu = new GLU();
         glut = new GLUT();
 
+        gl.glShadeModel(gl.GL_SMOOTH);
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
         gl.glPolygonMode(GL2.GL_BACK, GL2.GL_FILL);
+        gl.glDisable(gl.GL_LIGHTING);
 
-//        OglUtils.printOGLparameters(gl);
+        List<String> textGrapList = new ArrayList<>();
+        textGrapList.add("11.jpg");
+        textGrapList.add("test_texture.jpg");
 
-        System.out.println("Loading texture...");
-        InputStream is = getClass().getResourceAsStream("/11.jpg"); // vzhledem k adresari res v projektu
-        if (is == null)
-            System.out.println("File not found");
-        else
-            try {
-                texture = TextureIO.newTexture(is, true, "jpg");
-            } catch (IOException e) {
-                System.err.println("Chyba cteni souboru s texturou");
-            }
+
+
+
+        textGrapList.forEach(s -> {
+            System.out.println("Loading texture...");
+            InputStream is = getClass().getResourceAsStream(s); // vzhledem k adresari res v projektu
+            if (is == null)
+                System.out.println("File not found");
+            else
+                try {
+                    texture = TextureIO.newTexture(is, true, "jpg");
+                    texture.bind(gl);
+                    texture.enable(gl);
+                } catch (IOException e) {
+                    System.err.println("Chyba cteni souboru s texturou");
+                }
+        });
+
+
+
+
+//        textGrapList.forEach(s -> {
+//            System.out.println("Loading texture...");
+//            InputStream is = getClass().getResourceAsStream(s); // vzhledem k adresari res v projektu
+//            if (is == null)
+//                System.out.println("File not found");
+//            else
+//                try {
+//                    texture = TextureIO.newTexture(is, true, "jpg");
+//                    texture.enable(gl);
+//                    texture.bind(gl);
+//                } catch (IOException e) {
+//                    System.err.println("Chyba cteni souboru s texturou");
+//                }
+//        });
+
+        //        OglUtils.printOGLparameters(gl);
+//
+
+
 
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
         gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
-        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
-        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
+//        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+//        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR_MIPMAP_LINEAR);
 
         maze = new Maze1();
         px = maze.getStartPosition().getX();
@@ -88,10 +132,10 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         GL2 gl = glDrawable.getGL().getGL2();
 
         long mils = System.currentTimeMillis();
-        step = (mils - oldmils);
-//		float fps = 1000 / (float) (mils - oldmils);
+        step = (mils - oldmils) / 1000.0f;
+        //float fps = 1000 / (float) (mils - oldmils);
         oldmils = mils;
-        trans = 0.25f * step;
+        trans = 100 * step;
 
         //System.out.println(fps);
 
@@ -174,74 +218,23 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
             int size = maze.getSquareSize();
             for (int x = 0; x < level.length; x++) {
                 for (int z = 0; z < level.length; z++) {
-                    gl.glBegin(GL2.GL_QUADS);
                     switch (level[x][z]) {
                         //Hall
                         case 0:
-                            gl.glColor3f(0.0f, 0.0f, 1.0f);
-                            gl.glVertex3i(x * size, y, z * size);
-                            gl.glVertex3i(size * x + size, y, z * size);
-                            gl.glVertex3i(x * size + size, y, z * size + size);
-                            gl.glVertex3i(x * size, y, size * z + size);
+                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
                             break;
                         //Wall
                         case 1:
-                            int absAzi = Math.abs((int) azimut);
-                            //cyan
-//                            if (!(absAzi >= 270 - fovy / 2 && absAzi <= 270 + fovy / 2)) {
-                            if (x + 1 < level.length && level[x + 1][z] != 1) {
-                                gl.glColor3f(0.0f, 1.0f, 1.0f);
-                                gl.glVertex3i(size * x + size, y, z * size);
-                                gl.glVertex3i(x * size + size, y, z * size + size);
-                                gl.glVertex3i(x * size + size, y + size, z * size + size);
-                                gl.glVertex3i(size * x + size, y + size, z * size);
-                            }
-//                            }
-                            //magenta
-//                            if (!(absAzi >= 90 - fovy / 2 && absAzi <= 90 + fovy / 2)) {
-                            if (x - 1 > -1 && level[x - 1][z] != 1) {
-                                gl.glColor3f(1.0f, 0.0f, 1.0f);
-                                gl.glVertex3i(x * size, y + size, z * size);
-                                gl.glVertex3i(x * size, y + size, z * size + size);
-                                gl.glVertex3i(x * size, y, z * size + size);
-                                gl.glVertex3i(x * size, y, z * size);
-                            }
-//                            }
-                            //green
-//                            if (!(absAzi >= -fovy / 2 && absAzi <= fovy / 2)) {
-                            if (z - 1 > -1 && level[x][z - 1] != 1) {
-                                gl.glColor3f(0.0f, 1.0f, 0.0f);
-                                gl.glVertex3i(x * size, y, z * size);
-                                gl.glVertex3i(size * x + size, y, z * size);
-                                gl.glVertex3i(size * x + size, y + size, z * size);
-                                gl.glVertex3i(x * size, y + size, z * size);
-                            }
-//                            }
-                            //yellow
-//                            if (!(absAzi >= 180 - fovy / 2 && absAzi <= 180 + fovy / 2)) {
-                            if (z + 1 < level.length && level[x][z + 1] != 1) {
-                                gl.glColor3f(1.0f, 1.0f, 0.0f);
-                                gl.glVertex3i(x * size, y + size, z * size + size);
-                                gl.glVertex3i(x * size + size, y + size, z * size + size);
-                                gl.glVertex3i(x * size + size, y, z * size + size);
-                                gl.glVertex3i(x * size, y, z * size + size);
-                            }
-//                            }
-                            //top of wall
-                            gl.glColor3f(1.0f, 0.0f, 0.0f);
-                            gl.glVertex3i(x * size, y + size, z * size);
-                            gl.glVertex3i(size * x + size, y + size, z * size);
-                            gl.glVertex3i(x * size + size, y + size, z * size + size);
-                            gl.glVertex3i(x * size, y + size, z * size + size);
+                            new Wall().init(gl, maze,level, new Vec3D(x, y, z)).draw();
                             break;
                     }
 
-                    gl.glEnd();
                 }
             }
             y += maze.getWallHeight();
         }
         gl.glPopMatrix();
+
     }
 
     @Override
