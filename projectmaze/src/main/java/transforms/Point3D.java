@@ -210,6 +210,9 @@ public class Point3D {
     public Point3D add(final Point3D p) {
         return new Point3D(x + p.x, y + p.y, z + p.z, w + p.w);
     }
+    public Point3D addOffset(final double d) {
+        return new Point3D(x + d, y + d, z + d, w + d);
+    }
 
     /**
      * Returns the result of element-wise multiplication by the given scalar value
