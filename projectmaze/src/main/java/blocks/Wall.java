@@ -1,5 +1,6 @@
 package blocks;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import maze.AbstractMaze;
 import transforms.Vec3D;
@@ -28,9 +29,8 @@ public class Wall extends AbstractBlock {
     }
 
     public void draw() {
-//        int absAzi = Math.abs((int) azimut);
         //cyan
-//                            if (!(absAzi >= 270 - fovy / 2 && absAzi <= 270 + fovy / 2)) {
+        gl.glDisable(GL.GL_TEXTURE_2D);
         if (x + 1 < level.length && level[x + 1][z] != 1) {
             gl.glBegin(GL2.GL_QUADS);
             gl.glColor3f(0.0f, 1.0f, 1.0f);
@@ -41,9 +41,8 @@ public class Wall extends AbstractBlock {
             gl.glEnd();
 
         }
-//                            }
+
         //magenta
-//                            if (!(absAzi >= 90 - fovy / 2 && absAzi <= 90 + fovy / 2)) {
         if (x - 1 > -1 && level[x - 1][z] != 1) {
             gl.glBegin(GL2.GL_QUADS);
             gl.glColor3f(1.0f, 0.0f, 1.0f);
@@ -53,9 +52,7 @@ public class Wall extends AbstractBlock {
             gl.glVertex3i(x * size, y, z * size);
             gl.glEnd();
         }
-//                            }
         //green
-//                            if (!(absAzi >= -fovy / 2 && absAzi <= fovy / 2)) {
         if (z - 1 > -1 && level[x][z - 1] != 1) {
             gl.glBegin(GL2.GL_QUADS);
             gl.glColor3f(0.0f, 1.0f, 0.0f);
@@ -66,9 +63,7 @@ public class Wall extends AbstractBlock {
             gl.glEnd();
 
         }
-//                            }
         //yellow
-//                            if (!(absAzi >= 180 - fovy / 2 && absAzi <= 180 + fovy / 2)) {
         if (z + 1 < level.length && level[x][z + 1] != 1) {
             gl.glBegin(GL2.GL_QUADS);
             gl.glColor3f(1.0f, 1.0f, 0.0f);
@@ -79,7 +74,6 @@ public class Wall extends AbstractBlock {
             gl.glEnd();
 
         }
-//                            }
         //top of wall
         gl.glBegin(GL2.GL_QUADS);
         gl.glColor3f(1.0f, 0.0f, 0.0f);
