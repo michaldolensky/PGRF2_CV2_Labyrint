@@ -391,7 +391,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 
 
-        gl.glPopMatrix();
+//        gl.glPopMatrix();
         gl.glLoadIdentity();
         glu.gluLookAt(px, py, pz, ex + px, ey + py, ez + pz, ux, uy, uz);
 
@@ -411,7 +411,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glPopMatrix();
         // </editor-fold>
 
-
         gl.glPushMatrix();
         gl.glCallList(maze);
         gl.glPopMatrix();
@@ -427,8 +426,10 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         text += ", [R]eset player to start ";
 
 
-        if (getCurrentBlockAtPlayerLocation() == 3) {
-            OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
+        if (getCurrentBlockAtPlayerLocation() != null) {
+            if (getCurrentBlockAtPlayerLocation() == 3) {
+                OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
+            }
         }
 
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
@@ -476,14 +477,22 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         System.out.println("curMaze.getLevels().get(0)[posX][posZ] = " + curMaze.getLevels().get(0)[(int) posX][(int) posZ]);
     }
 
-    public int getCurrentBlockAtPlayerLocation() {
-        return curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) px / curMaze.getSquareSize()][(int) pz / curMaze.getSquareSize()];
+
+    /**
+     * @return Returns Block at player if is inside the maze, else returns null
+     */
+    public Integer getCurrentBlockAtPlayerLocation() {
+        if (px < 0 || pz < 0) return null;
+        else
+            return curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) px / curMaze.getSquareSize()][(int) pz / curMaze.getSquareSize()];
     }
 
 
     private void checkForTeleport() {
-        if (getCurrentBlockAtPlayerLocation() == 3) {
-            movePlayer(1, 1, 1);
+        if (getCurrentBlockAtPlayerLocation() != null) {
+            if ((getCurrentBlockAtPlayerLocation() == 3)) {
+                movePlayer(1, 1, 1);
+            }
         }
     }
 
@@ -603,7 +612,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 
     //fixme
-    // <editor-fold defaultstate="collapsed" desc=" Unused ">
     @Override
     public void mouseMoved(MouseEvent e) {
     }
@@ -632,7 +640,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
         }
-// </editor-fold>
     }
     // </editor-fold>
 
