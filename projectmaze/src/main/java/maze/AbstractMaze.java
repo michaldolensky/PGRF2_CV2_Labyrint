@@ -1,18 +1,18 @@
 package maze;
 
-import com.jogamp.opengl.util.texture.Texture;
 import transforms.Point3D;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AbstractMaze {
-    protected int squareSize = 40;
-    protected int wallHeight = 100;
-    protected Point3D startPosition;
-    protected List<int[][]> levels = new ArrayList();
+    private int currentLevel = 0;
+    private int squareSize = 40;
+    private int wallHeight = 100;
+    private Point3D startPosition;
+    private List<int[][]> levels = new ArrayList<>();
+    private List<String> textureUls = new ArrayList<>();
 
-    protected List<Texture> textures;
 
     public List<int[][]> getLevels() {
         return levels;
@@ -26,11 +26,28 @@ public class AbstractMaze {
         return wallHeight;
     }
 
-    public Point3D getStartPosition() {
-        return startPosition.mul(squareSize);
+    public Point3D getStartPosition(double offset) {
+        return startPosition.addOffset(offset).mul(squareSize);
     }
 
-    public List<Texture> getTextures() {
-        return textures;
+    public List<String> getTextureUls() {
+        return textureUls;
     }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
+    public Point3D getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(Point3D startPosition) {
+        this.startPosition = startPosition;
+    }
+
 }
