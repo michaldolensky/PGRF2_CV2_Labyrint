@@ -17,14 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
-/**
- * trida pro zobrazeni sceny v OpenGL:
- * kamera, skybox
- *
- * @author PGRF FIM UHK
- * @version 2015
- */
 public class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
 
     //static properties
