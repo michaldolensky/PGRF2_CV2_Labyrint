@@ -5,6 +5,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
 import maze.Maze1;
+import maze.Player;
 import transforms.Point3D;
 import utils.OglUtils;
 
@@ -20,8 +21,6 @@ import java.util.Objects;
 public class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
 
     //static properties
-    public final static int COLLISION_SIZE = 5;
-    public final static Point3D PLAYER_OFFSET = new Point3D(0.5, 0.5, 0.5);
 
     private GLU glu;
     private GLUT glut;
@@ -32,7 +31,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     private float zenit = 0;
     private float azimut = 0;
-    private double px, py, pz, ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
+    private double ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
     private float step, trans = 0;
     private boolean per = true, free = false;
     private double a_rad;
@@ -40,6 +39,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     private List<Texture> texture;
     private AbstractMaze curMaze;
+    private Player player;
     private String compass = "";
 
     private int maze = 0, debPlayerPos = 0, debPlayerStartPos = 0;
@@ -66,7 +66,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         float[] mat_shininess =
                 {25.0f};
         float[] light_position =
-                {100000.0f, 1.0f, 1.0f, 0.0f};
+                {1.0f, 1.0f, 1.0f, 0.0f};
 
         float[] red = {0.8f, 0.1f, 0.0f, 0.7f};
         float[] yellow = {0.8f, 0.75f, 0.0f, 0.7f};
@@ -74,7 +74,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         float[] brown = {0.8f, 0.4f, 0.1f, 0.7f};
 // </editor-fold>
         curMaze = new Maze1();
-        resetPlayer();
+        curMaze.resetPlayer();
+        player = curMaze.getPlayer();
 
         // <editor-fold defaultstate="collapsed" desc=" Texture loading ">
         texture = new ArrayList<>();
@@ -141,7 +142,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         }
         // </editor-fold>
 
-//        // <editor-fold defaultstate="collapsed" desc=" Player Position ">
+        //        // <editor-fold defaultstate="collapsed" desc=" Player Position ">
 //
 //        if (0 >= debPlayerPos) {
 //            debPlayerPos = gl.glGenLists(1);
@@ -154,7 +155,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //            System.err.println("box list reused: " + debPlayerPos);
 //        }
 //        // </editor-fold>
-//        // <editor-fold defaultstate="collapsed" desc=" Player Start Position ">
+        //        // <editor-fold defaultstate="collapsed" desc=" Player Start Position ">
 //        if (0 >= debPlayerStartPos) {
 //            debPlayerStartPos = gl.glGenLists(1);
 //            gl.glNewList(debPlayerStartPos, GL2.GL_COMPILE);
@@ -170,23 +171,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         // </editor-fold>
 
         gl.glEnable(GL2.GL_NORMALIZE);
-    }
-
-    /**
-     * Resets Player to start Position
-     */
-    private void resetPlayer() {
-        px = curMaze.getStartPosition(PLAYER_OFFSET.getX()).getX();
-        py = curMaze.getStartPosition(PLAYER_OFFSET.getY()).getY();
-        pz = curMaze.getStartPosition(PLAYER_OFFSET.getZ()).getZ();
-        curMaze.setCurrentLevel((int) curMaze.getStartPosition().getY());
-    }
-
-    private void movePlayer(int x, int level, int z) {
-        curMaze.setCurrentLevel(level);
-        px = curMaze.getSquareSize() * x + PLAYER_OFFSET.getX() * curMaze.getSquareSize();
-        py = curMaze.getCurrentLevel() * curMaze.getHeightBetweenLevels() + PLAYER_OFFSET.getY() * curMaze.getSquareSize();
-        pz = curMaze.getSquareSize() * z + PLAYER_OFFSET.getZ() * curMaze.getSquareSize();
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Object Data generation ">
@@ -393,11 +377,11 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 //        gl.glPopMatrix();
         gl.glLoadIdentity();
-        glu.gluLookAt(px, py, pz, ex + px, ey + py, ez + pz, ux, uy, uz);
+        glu.gluLookAt(player.getPX(), player.getPY(), player.getPZ(), ex + player.getPX(), ey + player.getPY(), ez + player.getPZ(), ux, uy, uz);
 
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">
         gl.glPushMatrix();
-        Point3D sP = curMaze.getStartPosition();
+        Point3D sP = curMaze.calcPos(curMaze.getStartPosition());
         gl.glColor3f(1, 1, 1);
         gl.glTranslated(sP.getX(), sP.getY(), sP.getZ());
         glut.glutWireCube(5);
@@ -406,7 +390,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         //player pos
         gl.glPushMatrix();
         gl.glColor3f(1, 0, 0);
-        gl.glTranslated(px, py - 18, pz);
+        gl.glTranslated(player.getPX(), player.getPY() - 18, player.getPZ());
         glut.glutSolidCube(1);
         gl.glPopMatrix();
         // </editor-fold>
@@ -426,15 +410,15 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         text += ", [R]eset player to start ";
 
 
-        if (getCurrentBlockAtPlayerLocation() != null) {
-            if (getCurrentBlockAtPlayerLocation() == 3) {
+        if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
+            if (curMaze.getCurrentBlockAtPlayerLocation() == 3) {
                 OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
             }
         }
 
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
 //        OglUtils.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
-        OglUtils.drawStr2D(glDrawable, width - 590, 3, String.format("%f|%f|%f||%f|%f|%f||%f|%f|%f", px, py, pz, ex + py, ey + py, ez + pz, ux, uy, uz));
+        OglUtils.drawStr2D(glDrawable, width - 590, 3, String.format("%f|%f|%f||%f|%f|%f||%f|%f|%f", player.getPX(), player.getPY(), player.getPZ(), ex + player.getPX(), ey + player.getPY(), ez + player.getPZ(), ux, uy, uz));
 //        OglUtils.drawStr2D(glDrawable, frame.getWidth() / 2, height - 20, compass);
 
 
@@ -449,49 +433,10 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glViewport(0, 0, this.width, this.height);
     }
 
-
-    private void detectColision(double x, double z) {
-        double posX = x / curMaze.getSquareSize();
-        double posZ = z / curMaze.getSquareSize();
-        double curPosX = px / curMaze.getSquareSize();
-        double curPosZ = pz / curMaze.getSquareSize();
-
-        if (posZ - curPosZ > 0) {
-            posZ = (z + COLLISION_SIZE) / curMaze.getSquareSize();
-        } else posZ = (z - COLLISION_SIZE) / curMaze.getSquareSize();
-        if (curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) posX][(int) posZ] != 1) pz = z;
-
-        posZ = z / curMaze.getSquareSize();
-        if (posX - curPosX > 0) {
-            posX = (x + COLLISION_SIZE) / curMaze.getSquareSize();
-        } else posX = (x - COLLISION_SIZE) / curMaze.getSquareSize();
-        if (curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) posX][(int) posZ] != 1) px = x;
-
-        System.out.println("-----");
-        System.out.println("posX - curPosX = " + (posX - curPosX));
-        System.out.println("posZ - curPosZ = " + (posZ - curPosZ));
-        System.out.println("posX = " + posX);
-        System.out.println("posZ = " + posZ);
-        System.out.println("curPosX = " + curPosX);
-        System.out.println("curPosZ = " + curPosZ);
-        System.out.println("curMaze.getLevels().get(0)[posX][posZ] = " + curMaze.getLevels().get(0)[(int) posX][(int) posZ]);
-    }
-
-
-    /**
-     * @return Returns Block at player if is inside the maze, else returns null
-     */
-    public Integer getCurrentBlockAtPlayerLocation() {
-        if (px < 0 || pz < 0) return null;
-        else
-            return curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) px / curMaze.getSquareSize()][(int) pz / curMaze.getSquareSize()];
-    }
-
-
     private void checkForTeleport() {
-        if (getCurrentBlockAtPlayerLocation() != null) {
-            if ((getCurrentBlockAtPlayerLocation() == 3)) {
-                movePlayer(1, 1, 1);
+        if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
+            if ((curMaze.getCurrentBlockAtPlayerLocation() == 3)) {
+                curMaze.movePlayer(1, 1, 1);
             }
         }
     }
@@ -545,44 +490,40 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
             if (free) {
-                px += ex * trans;
-                py += ey * trans;
-                pz += ez * trans;
+                player.getPos().add(new Point3D(ex * trans, ey * trans, ez * trans));
             } else {
-                double kpx = px + ex * trans;
-                double kpz = pz + ez * trans;
-                detectColision(kpx, kpz);
+                double kpx = player.getPX() + ex * trans;
+                double kpz = player.getPZ() + ez * trans;
+                curMaze.detectColision(kpx, kpz);
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
             if (free) {
-                px -= ex * trans;
-                py -= ey * trans;
-                pz -= ez * trans;
+                player.getPos().sub(new Point3D(ex * trans, ey * trans, ez * trans));
             } else {
-                double kpx = px - ex * trans;
-                double kpz = pz - ez * trans;
-                detectColision(kpx, kpz);
+                double kpx = player.getPX() - ex * trans;
+                double kpz = player.getPZ() - ez * trans;
+                curMaze.detectColision(kpx, kpz);
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_A) {
             if (free) {
-                px += Math.sin(a_rad - Math.PI / 2) * trans;
-                pz -= Math.cos(a_rad - Math.PI / 2) * trans;
+                player.getPos().addX(Math.sin(a_rad - Math.PI / 2) * trans);
+                player.getPos().subZ(Math.cos(a_rad - Math.PI / 2) * trans);
             } else {
-                double kpx = px + Math.sin(a_rad - Math.PI / 2) * trans;
-                double kpz = pz - Math.cos(a_rad - Math.PI / 2) * trans;
-                detectColision(kpx, kpz);
+                double kpx = player.getPos().getX() + Math.sin(a_rad - Math.PI / 2) * trans;
+                double kpz = player.getPos().getZ() - Math.cos(a_rad - Math.PI / 2) * trans;
+                curMaze.detectColision(kpx, kpz);
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_D) {
             if (free) {
-                px -= Math.sin(a_rad - Math.PI / 2) * trans;
-                pz += Math.cos(a_rad - Math.PI / 2) * trans;
+                player.getPos().subX(Math.sin(a_rad - Math.PI / 2) * trans);
+                player.getPos().addZ(Math.cos(a_rad - Math.PI / 2) * trans);
             } else {
-                double kpx = px - Math.sin(a_rad - Math.PI / 2) * trans;
-                double kpz = pz + Math.cos(a_rad - Math.PI / 2) * trans;
-                detectColision(kpx, kpz);
+                double kpx = player.getPos().getX() - Math.sin(a_rad - Math.PI / 2) * trans;
+                double kpz = player.getPos().getZ() + Math.cos(a_rad - Math.PI / 2) * trans;
+                curMaze.detectColision(kpx, kpz);
             }
         }
 
@@ -596,7 +537,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 free = !free;
                 //Returns player to playing height
                 if (!free)
-                    py = curMaze.getCurrentLevel() * curMaze.getHeightBetweenLevels() + PLAYER_OFFSET.getY() * curMaze.getSquareSize();
+                    player.getPos().setY(curMaze.getPlayer().getCurrentLevel() * curMaze.getHeightBetweenLevels() + curMaze.PLAYER_OFFSET.getY() * curMaze.getSquareSize());
                 break;
             case KeyEvent.VK_P:
                 per = !per;
@@ -605,7 +546,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 checkForTeleport();
                 break;
             case KeyEvent.VK_R:
-                resetPlayer();
+                curMaze.resetPlayer();
                 break;
         }
     }

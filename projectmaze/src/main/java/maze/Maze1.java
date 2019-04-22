@@ -5,6 +5,8 @@ import transforms.Point3D;
 public class Maze1 extends AbstractMaze {
 
     public Maze1() {
+        setStartPosition(new Point3D(1, 0, 1));
+        getPlayer().setPos(calcPos(getStartPosition()));
         int[][] level0 = new int[][]{
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -31,8 +33,7 @@ public class Maze1 extends AbstractMaze {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         };
         getLevels().add(level1);
-        setCurrentLevel(0);
-        setStartPosition(new Point3D(1, 0, 1));
+        getPlayer().setCurrentLevel(0);
         getTextureUls().add("textures/block/black_wool.png");
         getTextureUls().add("textures/block/acacia_planks.png");
         getTextureUls().add("textures/block/dead_horn_coral.png");

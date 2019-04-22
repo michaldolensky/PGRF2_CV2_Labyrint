@@ -12,7 +12,7 @@ import java.util.Optional;
  */
 
 public class Point3D {
-    private final double x, y, z, w;
+    private double x, y, z, w;
 
     /**
      * Creates a homogeneous point representing the origin
@@ -142,6 +142,17 @@ public class Point3D {
         return w;
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
+    }
 
     /**
      * Returns a clone of this point with the homogeneous x coordinate replaced by the
@@ -210,8 +221,39 @@ public class Point3D {
     public Point3D add(final Point3D p) {
         return new Point3D(x + p.x, y + p.y, z + p.z, w + p.w);
     }
+
+    public void addX(final double px) {
+        this.x += px;
+    }
+
+    public void addY(final double py) {
+        this.y += py;
+    }
+
+    public void addZ(final double pz) {
+        this.z += pz;
+    }
+
+
     public Point3D addOffset(final double d) {
         return new Point3D(x + d, y + d, z + d, w + d);
+    }
+
+    public Point3D sub(final Point3D p) {
+        return new Point3D(x - p.x, y - p.y, z - p.z, w - p.w);
+    }
+
+
+    public void subX(final double px) {
+        this.x -= px;
+    }
+
+    public void subY(final double py) {
+        this.y -= py;
+    }
+
+    public void subZ(final double pz) {
+        this.z -= pz;
     }
 
     /**
