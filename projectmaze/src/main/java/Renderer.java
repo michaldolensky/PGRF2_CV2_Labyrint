@@ -375,7 +375,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         step = (mils - oldmils) / 1000.0f;
         //float fps = 1000 / (float) (mils - oldmils);
         oldmils = mils;
-        trans = 100 * step;
+        trans = 300 * step;
 
         //System.out.println(fps);
 
@@ -449,7 +449,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     }
 
 
-    public void detectColision(double x, double z) {
+    private void detectColision(double x, double z) {
         double posX = x / curMaze.getSquareSize();
         double posZ = z / curMaze.getSquareSize();
         double curPosX = px / curMaze.getSquareSize();

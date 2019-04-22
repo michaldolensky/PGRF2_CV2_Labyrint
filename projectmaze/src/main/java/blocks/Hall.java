@@ -5,7 +5,6 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import maze.AbstractMaze;
 import transforms.Vec3D;
-import utils.LoadTexture;
 
 public class Hall extends AbstractBlock {
     GL2 gl;
