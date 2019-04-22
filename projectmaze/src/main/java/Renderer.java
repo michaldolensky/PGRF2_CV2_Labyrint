@@ -6,7 +6,6 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
 import maze.Maze1;
 import transforms.Point3D;
-import transforms.Point3Di;
 import utils.OglUtils;
 
 import javax.swing.*;
@@ -443,7 +442,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        //</editor-fold> defaultstate="collapsed"
         GL2 gl = drawable.getGL().getGL2();
         this.width = width;
         this.height = height;
@@ -452,7 +450,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 
     public void detectColision(double x, double z) {
-        //</editor-fold> defaultstate="collapsed"
         double posX = x / curMaze.getSquareSize();
         double posZ = z / curMaze.getSquareSize();
         double curPosX = px / curMaze.getSquareSize();
@@ -479,10 +476,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         System.out.println("curMaze.getLevels().get(0)[posX][posZ] = " + curMaze.getLevels().get(0)[(int) posX][(int) posZ]);
     }
 
-    public Point3Di getPlayerCurrentPos() {
-        return new Point3Di((int) px / curMaze.getSquareSize(), curMaze.getCurrentLevel(), (int) pz / curMaze.getSquareSize());
-    }
-
     public int getCurrentBlockAtPlayerLocation() {
         return curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) px / curMaze.getSquareSize()][(int) pz / curMaze.getSquareSize()];
     }
@@ -505,7 +498,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        //</editor-fold> defaultstate="collapsed"
         int dx = e.getX() - ox;
         int dy = e.getY() - oy;
         ox = e.getX();
