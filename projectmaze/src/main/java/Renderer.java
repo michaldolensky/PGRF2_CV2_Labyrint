@@ -28,25 +28,26 @@ import java.util.Objects;
 public class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
 
     //static properties
-    final static int COLLISION_SIZE = 5;
-    final static Point3D PLAYER_OFFSET = new Point3D(0.5, 0.5, 0.5);
+    public final static int COLLISION_SIZE = 5;
+    public final static Point3D PLAYER_OFFSET = new Point3D(0.5, 0.5, 0.5);
 
-    GLU glu;
-    GLUT glut;
+    private GLU glu;
+    private GLUT glut;
 
-    int width, height, dx = 0, dy = 0;
-    int ox, oy;
+    private int width;
+    private int height;
+    private int ox, oy;
 
-    float zenit = 0;
-    float azimut = 0;
-    double px, py, pz, ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
-    float step, trans = 0;
-    boolean per = true, free = false;
-    double a_rad, z_rad;
-    long oldmils = System.currentTimeMillis();
+    private float zenit = 0;
+    private float azimut = 0;
+    private double px, py, pz, ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
+    private float step, trans = 0;
+    private boolean per = true, free = false;
+    private double a_rad;
+    private long oldmils = System.currentTimeMillis();
 
-    List<Texture> texture;
-    AbstractMaze curMaze;
+    private List<Texture> texture;
+    private AbstractMaze curMaze;
     private String compass = "";
 
     private int maze = 0, debPlayerPos = 0, debPlayerStartPos = 0;
@@ -353,7 +354,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                     }
                 }
             }
-            y += curMaze.getWallHeight();
+            y += curMaze.getHeightBetweenLevels();
         }
 
     }
@@ -485,8 +486,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     @Override
     public void mouseDragged(MouseEvent e) {
         //</editor-fold> defaultstate="collapsed"
-        dx = e.getX() - ox;
-        dy = e.getY() - oy;
+        int dx = e.getX() - ox;
+        int dy = e.getY() - oy;
         ox = e.getX();
         oy = e.getY();
 
@@ -496,7 +497,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         azimut -= dx;
         azimut = azimut % 360;
         a_rad = -1 * azimut * Math.PI / 180;
-        z_rad = zenit * Math.PI / 180;
+        double z_rad = zenit * Math.PI / 180;
         ex = Math.sin(a_rad) * Math.cos(z_rad);
         ey = Math.sin(z_rad);
         ez = -Math.cos(a_rad) * Math.cos(z_rad);
@@ -574,7 +575,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 free = !free;
                 //Returns player to playing height
                 if (!free)
-                    py = curMaze.getCurrentLevel() * curMaze.getWallHeight() + PLAYER_OFFSET.getY() * curMaze.getSquareSize();
+                    py = curMaze.getCurrentLevel() * curMaze.getHeightBetweenLevels() + PLAYER_OFFSET.getY() * curMaze.getSquareSize();
                 break;
             case KeyEvent.VK_P:
                 per = !per;

@@ -8,7 +8,7 @@ import java.util.List;
 public class AbstractMaze {
     private int currentLevel = 0;
     private int squareSize = 40;
-    private int wallHeight = 100;
+    private int heightBetweenLevels = 100;
     private Point3D startPosition;
     private List<int[][]> levels = new ArrayList<>();
     private List<String> textureUls = new ArrayList<>();
@@ -22,9 +22,10 @@ public class AbstractMaze {
         return squareSize;
     }
 
-    public int getWallHeight() {
-        return wallHeight;
+    public int getHeightBetweenLevels() {
+        return heightBetweenLevels;
     }
+
 
     public Point3D getStartPosition(double offset) {
         return startPosition.addOffset(offset).mul(squareSize);
