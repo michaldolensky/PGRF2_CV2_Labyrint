@@ -1,11 +1,11 @@
 package utils;
 
-import java.awt.Font;
-
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
+
+import java.awt.*;
 
 public class OglUtils {
 
@@ -41,35 +41,64 @@ public class OglUtils {
 	public static void drawStr(GLAutoDrawable glDrawable, float x, float y, String s) {
 		drawStr(glDrawable, x, y, 0, s) ;
 	}
-	
-	public static void drawStr2D(GLAutoDrawable glDrawable, int x, int y, String s) {
-		if (glDrawable == null)
-			return;
-		GL2 gl = glDrawable.getGL().getGL2();
 
-		//push all parameters
-		int shaderProgram = pushAll(glDrawable);
-		gl.glDisable(GL2.GL_TEXTURE_2D);
-		gl.glDisable(GL2.GL_LIGHTING);
-		gl.glFrontFace(GL2.GL_CCW);
-		gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL); 
-		gl.glPolygonMode(GL2.GL_BACK, GL2.GL_LINE);
-		
-		gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
-		gl.glViewport(0, 0, glDrawable.getSurfaceWidth(),
-				glDrawable.getSurfaceHeight());
-		TextRenderer renderer;
-		renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 12));
-		renderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-		
-		renderer.beginRendering(glDrawable.getSurfaceWidth(),
-				glDrawable.getSurfaceHeight());
-		renderer.draw(s, x, y);
-		renderer.endRendering();
-		
-		//pop all parameters
-		popAll(glDrawable, shaderProgram);
-		}
+    public static void drawStr2D(GLAutoDrawable glDrawable, int x, int y, String s) {
+        if (glDrawable == null)
+            return;
+        GL2 gl = glDrawable.getGL().getGL2();
+
+        //push all parameters
+        int shaderProgram = pushAll(glDrawable);
+        gl.glDisable(GL2.GL_TEXTURE_2D);
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glFrontFace(GL2.GL_CCW);
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+        gl.glPolygonMode(GL2.GL_BACK, GL2.GL_LINE);
+
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+        gl.glViewport(0, 0, glDrawable.getSurfaceWidth(),
+                glDrawable.getSurfaceHeight());
+        TextRenderer renderer;
+        renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, 12));
+        renderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        renderer.beginRendering(glDrawable.getSurfaceWidth(),
+                glDrawable.getSurfaceHeight());
+        renderer.draw(s, x, y);
+        renderer.endRendering();
+
+        //pop all parameters
+        popAll(glDrawable, shaderProgram);
+    }
+
+    public static void drawStr2D(GLAutoDrawable glDrawable, int x, int y, String s, int fontSize) {
+        if (glDrawable == null)
+            return;
+        GL2 gl = glDrawable.getGL().getGL2();
+
+        //push all parameters
+        int shaderProgram = pushAll(glDrawable);
+        gl.glDisable(GL2.GL_TEXTURE_2D);
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glFrontFace(GL2.GL_CCW);
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+        gl.glPolygonMode(GL2.GL_BACK, GL2.GL_LINE);
+
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+        gl.glViewport(0, 0, glDrawable.getSurfaceWidth(),
+                glDrawable.getSurfaceHeight());
+        TextRenderer renderer;
+        renderer = new TextRenderer(new Font("SansSerif", Font.PLAIN, fontSize));
+        renderer.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+        renderer.beginRendering(glDrawable.getSurfaceWidth(),
+                glDrawable.getSurfaceHeight());
+        renderer.draw(s, x, y);
+        renderer.endRendering();
+
+        //pop all parameters
+        popAll(glDrawable, shaderProgram);
+    }
 	 
 	 private static int pushAll(GLAutoDrawable glDrawable){
 		 	if (glDrawable == null)

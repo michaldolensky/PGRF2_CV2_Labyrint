@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
 import maze.Maze1;
 import transforms.Point3D;
+import transforms.Point3Di;
 import utils.OglUtils;
 
 import javax.swing.*;
@@ -180,6 +181,13 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         py = curMaze.getStartPosition(PLAYER_OFFSET.getY()).getY();
         pz = curMaze.getStartPosition(PLAYER_OFFSET.getZ()).getZ();
         curMaze.setCurrentLevel((int) curMaze.getStartPosition().getY());
+    }
+
+    private void movePlayer(int x, int level, int z) {
+        curMaze.setCurrentLevel(level);
+        px = curMaze.getSquareSize() * x + PLAYER_OFFSET.getX() * curMaze.getSquareSize();
+        py = curMaze.getCurrentLevel() * curMaze.getHeightBetweenLevels() + PLAYER_OFFSET.getY() * curMaze.getSquareSize();
+        pz = curMaze.getSquareSize() * z + PLAYER_OFFSET.getZ() * curMaze.getSquareSize();
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Object Data generation ">
@@ -419,6 +427,11 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         text += ", [R]eset player to start ";
 
+
+        if (getCurrentBlockAtPlayerLocation() == 3) {
+            OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
+        }
+
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
 //        OglUtils.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
         OglUtils.drawStr2D(glDrawable, width - 590, 3, String.format("%f|%f|%f||%f|%f|%f||%f|%f|%f", px, py, pz, ex + py, ey + py, ez + pz, ux, uy, uz));
@@ -448,22 +461,37 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         if (posZ - curPosZ > 0) {
             posZ = (z + COLLISION_SIZE) / curMaze.getSquareSize();
         } else posZ = (z - COLLISION_SIZE) / curMaze.getSquareSize();
-        if (curMaze.getLevels().get(0)[(int) posX][(int) posZ] != 1) pz = z;
+        if (curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) posX][(int) posZ] != 1) pz = z;
 
         posZ = z / curMaze.getSquareSize();
         if (posX - curPosX > 0) {
             posX = (x + COLLISION_SIZE) / curMaze.getSquareSize();
         } else posX = (x - COLLISION_SIZE) / curMaze.getSquareSize();
-        if (curMaze.getLevels().get(0)[(int) posX][(int) posZ] != 1) px = x;
+        if (curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) posX][(int) posZ] != 1) px = x;
 
-//        System.out.println("-----");
-//        System.out.println("posX - curPosX = " + (posX - curPosX));
-//        System.out.println("posZ - curPosZ = " + (posZ - curPosZ));
-//        System.out.println("posX = " + posX);
-//        System.out.println("posZ = " + posZ);
-//        System.out.println("curPosX = " + curPosX);
-//        System.out.println("curPosZ = " + curPosZ);
-//        System.out.println("curMaze.getLevels().get(0)[posX][posZ] = " + curMaze.getLevels().get(0)[(int) posX][(int) posZ]);
+        System.out.println("-----");
+        System.out.println("posX - curPosX = " + (posX - curPosX));
+        System.out.println("posZ - curPosZ = " + (posZ - curPosZ));
+        System.out.println("posX = " + posX);
+        System.out.println("posZ = " + posZ);
+        System.out.println("curPosX = " + curPosX);
+        System.out.println("curPosZ = " + curPosZ);
+        System.out.println("curMaze.getLevels().get(0)[posX][posZ] = " + curMaze.getLevels().get(0)[(int) posX][(int) posZ]);
+    }
+
+    public Point3Di getPlayerCurrentPos() {
+        return new Point3Di((int) px / curMaze.getSquareSize(), curMaze.getCurrentLevel(), (int) pz / curMaze.getSquareSize());
+    }
+
+    public int getCurrentBlockAtPlayerLocation() {
+        return curMaze.getLevels().get(curMaze.getCurrentLevel())[(int) px / curMaze.getSquareSize()][(int) pz / curMaze.getSquareSize()];
+    }
+
+
+    private void checkForTeleport() {
+        if (getCurrentBlockAtPlayerLocation() == 3) {
+            movePlayer(1, 1, 1);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Controls ">
@@ -573,12 +601,14 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 per = !per;
                 break;
             case KeyEvent.VK_E:
+                checkForTeleport();
                 break;
             case KeyEvent.VK_R:
                 resetPlayer();
                 break;
         }
     }
+
 
     //fixme
     // <editor-fold defaultstate="collapsed" desc=" Unused ">

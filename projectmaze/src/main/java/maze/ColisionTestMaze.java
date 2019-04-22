@@ -12,6 +12,6 @@ public class ColisionTestMaze extends AbstractMaze {
     };
     public ColisionTestMaze() {
         getLevels().add(level0);
-        startPosition = new Point3D(1.5,0.5,1.5);
+        setStartPosition(new Point3D(1, 0, 1));
     }
 }
