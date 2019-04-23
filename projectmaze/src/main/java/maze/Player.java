@@ -4,6 +4,8 @@ import transforms.Point3D;
 
 public class Player {
     private Point3D pos = new Point3D();
+    private Point3D center = new Point3D();
+    private Point3D up = new Point3D();
     private int currentLevel;
 
     public Point3D getPos() {
@@ -33,5 +35,26 @@ public class Player {
     public double getPZ() {
         return pos.getZ();
     }
+
+    public Point3D getCenter() {
+        return center;
+    }
+
+    public void setCenter(Point3D center) {
+        this.center = center;
+    }
+
+    public double getCX() {
+        return center.getX();
+    }
+
+    public double getCY() {
+        return center.getY();
+    }
+
+    public double getCZ() {
+        return center.getZ();
+    }
+
 
 }

@@ -33,6 +33,19 @@ public class Maze1 extends AbstractMaze {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         };
         getLevels().add(level1);
+        int[][] level2 = new int[][]{
+                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 0, 1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 0, 1, 1, 1, 1, 1, 1, 1, 1},
+                {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {1, 1, 0, 1, 1, 1, 1, 0, 0, 1},
+                {1, 1, 0, 1, 0, 0, 1, 0, 1, 1},
+                {1, 1, 0, 1, 0, 0, 1, 0, 0, 1},
+                {1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+                {1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 0, 0, 0, 0, 0},
+        };
+        getLevels().add(level2);
         getPlayer().setCurrentLevel(0);
         //floor
         getTextureUls().add("textures/block/black_wool.png");
@@ -42,6 +55,7 @@ public class Maze1 extends AbstractMaze {
         getTextureUls().add("textures/block/concrete_powder/blue_concrete_powder.png");
         getTextureUls().add("textures/block/water_still.png");
         getTextureUls().add("textures/block/clay.png");
+        getTextureUls().add("textures/block/piston_inner.png");
     }
 
 }
