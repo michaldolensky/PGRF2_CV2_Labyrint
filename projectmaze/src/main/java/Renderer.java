@@ -122,6 +122,10 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
+
+        //fixme
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
         // </editor-fold>
@@ -187,7 +191,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                             if (texture.get(0) != null) {
                                 texture.get(0).enable(gl);
                                 texture.get(0).bind(gl);
-                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 //                                TextureCoords coords = texture[0].getImageTexCoords();
 
                                 gl.glBegin(GL2.GL_QUADS);
@@ -208,7 +211,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                             if (texture.get(6) != null) {
                                 texture.get(6).enable(gl);
                                 texture.get(6).bind(gl);
-                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 //                                TextureCoords coords = texture[0].getImageTexCoords();
 
                                 gl.glBegin(GL2.GL_QUADS);
@@ -234,7 +236,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                             if (texture.get(7) != null) {
                                 texture.get(7).enable(gl);
                                 texture.get(7).bind(gl);
-                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 //                                TextureCoords coords = texture[0].getImageTexCoords();
 
                                 gl.glBegin(GL2.GL_QUADS);
@@ -255,7 +256,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                             if (texture.get(7) != null) {
                                 texture.get(7).enable(gl);
                                 texture.get(7).bind(gl);
-                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 //                                TextureCoords coords = texture[0].getImageTexCoords();
 
                                 gl.glBegin(GL2.GL_QUADS);
@@ -285,7 +285,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                     texture.get(1).bind(gl);
                                     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
                                     gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
-                                    gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
                                     gl.glBegin(GL2.GL_QUADS);
                                     gl.glColor3f(0.0f, 1.0f, 1.0f);
                                     gl.glTexCoord2f(4, 0);
@@ -306,7 +305,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                 if (texture.get(2) != null) {
                                     texture.get(2).enable(gl);
                                     texture.get(2).bind(gl);
-                                    gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
                                     gl.glBegin(GL2.GL_QUADS);
                                     gl.glColor3f(1.0f, 0.0f, 1.0f);
                                     gl.glTexCoord2f(0, 1);
@@ -326,7 +324,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                 if (texture.get(3) != null) {
                                     texture.get(3).enable(gl);
                                     texture.get(3).bind(gl);
-                                    gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
                                     gl.glBegin(GL2.GL_QUADS);
                                     gl.glColor3f(0.0f, 1.0f, 0.0f);
                                     gl.glTexCoord2f(0, 1);
@@ -346,7 +343,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                 if (texture.get(4) != null) {
                                     texture.get(4).enable(gl);
                                     texture.get(4).bind(gl);
-                                    gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
                                     gl.glBegin(GL2.GL_QUADS);
                                     gl.glColor3f(1.0f, 1.0f, 0.0f);
                                     gl.glTexCoord2f(0, 1);
@@ -365,7 +361,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //                            if (texture.get(5) != null) {
 //                                texture.get(5).enable(gl);
 //                                texture.get(5).bind(gl);
-//                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 //                                gl.glBegin(GL2.GL_QUADS);
 //                                gl.glColor3f(1.0f, 0.0f, 0.0f);
 //                                gl.glTexCoord2f(0, 1);
