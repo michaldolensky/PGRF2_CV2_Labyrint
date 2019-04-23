@@ -34,11 +34,12 @@ public class Maze1 extends AbstractMaze {
         };
         getLevels().add(level1);
         getPlayer().setCurrentLevel(0);
+        //floor
         getTextureUls().add("textures/block/black_wool.png");
         getTextureUls().add("textures/block/acacia_planks.png");
-        getTextureUls().add("textures/block/dead_horn_coral.png");
+        getTextureUls().add("textures/block/bricks.png");
         getTextureUls().add("textures/block/cobblestone.png");
-        getTextureUls().add("textures/block/cauldron_top.png");
+        getTextureUls().add("textures/block/concrete_powder/blue_concrete_powder.png");
         getTextureUls().add("textures/block/water_still.png");
         getTextureUls().add("textures/block/clay.png");
     }

@@ -48,9 +48,9 @@ public class AbstractMaze {
      * @return Returns Block at player if is inside the maze, else returns null
      */
     public Integer getCurrentBlockAtPlayerLocation() {
-        if (player.getPos().getX() < 0 || player.getPos().getZ() < 0) return null;
+        if (player.getPX() < 0 || player.getPZ() < 0 || player.getPX()>levels.get(player.getCurrentLevel()).length*squareSize ||player.getPZ()>levels.get(player.getCurrentLevel()).length*squareSize ) return null;
         else
-            return levels.get(player.getCurrentLevel())[(int) player.getPos().getX() / squareSize][(int) player.getPos().getZ() / squareSize];
+            return levels.get(player.getCurrentLevel())[(int) player.getPX() / squareSize][(int) player.getPZ() / squareSize];
     }
 
     /**

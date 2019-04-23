@@ -218,8 +218,11 @@ public class Point3D {
      * @param p homogeneous 3D point to sum
      * @return new Point3D instance
      */
-    public Point3D add(final Point3D p) {
-        return new Point3D(x + p.x, y + p.y, z + p.z, w + p.w);
+    public void add(final Point3D p) {
+        this.x += p.getX();
+        this.y += p.getY();
+        this.z += p.getZ();
+        this.w += p.getW();
     }
 
     public void addX(final double px) {
@@ -239,10 +242,12 @@ public class Point3D {
         return new Point3D(x + d, y + d, z + d, w + d);
     }
 
-    public Point3D sub(final Point3D p) {
-        return new Point3D(x - p.x, y - p.y, z - p.z, w - p.w);
+    public void sub(final Point3D p) {
+        this.x -= p.getX();
+        this.y -= p.getY();
+        this.z -= p.getZ();
+        this.w -= p.getW();
     }
-
 
     public void subX(final double px) {
         this.x -= px;

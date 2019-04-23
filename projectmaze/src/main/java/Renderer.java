@@ -417,9 +417,9 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         }
 
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
-//        OglUtils.drawStr2D(glDrawable, width - 90, 3, " (c) PGRF UHK");
+        OglUtils.drawStr2D(glDrawable, 90, 3, " (c) Michal Dolenský 2019 | Textures:  © 2016 Sapix");
         OglUtils.drawStr2D(glDrawable, width - 590, 3, String.format("%f|%f|%f||%f|%f|%f||%f|%f|%f", player.getPX(), player.getPY(), player.getPZ(), ex + player.getPX(), ey + player.getPY(), ez + player.getPZ(), ux, uy, uz));
-//        OglUtils.drawStr2D(glDrawable, frame.getWidth() / 2, height - 20, compass);
+        OglUtils.drawStr2D(glDrawable, width / 2, height - 20, compass);
 
 
         // </editor-fold>
@@ -440,7 +440,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
             }
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc=" Controls ">
     @Override
     public void mousePressed(MouseEvent e) {
@@ -472,18 +471,18 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         uz = -Math.cos(a_rad) * Math.cos(z_rad + Math.PI / 2);
 
 //        System.out.println("azimut = " + azimut);
-//        if (azimut >= -fovy / 2.0 && azimut <= fovy / 2.0) {
-//            compass = "N";
-//        }
-//        if (azimut >= 90 - fovy / 2.0 && azimut <= 90 + fovy / 2.0) {
-//            compass = "E";
-//        }
-//        if (azimut >= 180 - fovy / 2.0 && azimut <= 180 + fovy / 2.0) {
-//            compass = "S";
-//        }
-//        if (azimut >= 270 - fovy / 2.0 && azimut <= 270 + fovy / 2.0) {
-//            compass = "W";
-//        }
+        if (azimut >= -90 / 2.0 && azimut <= 90 / 2.0) {
+            compass = "N";
+        }
+        if (azimut >= 90 - 90 / 2.0 && azimut <= 90 + 90 / 2.0) {
+            compass = "E";
+        }
+        if (azimut >= 180 - 90 / 2.0 && azimut <= 180 + 90 / 2.0) {
+            compass = "S";
+        }
+        if (azimut >= 270 - 90 / 2.0 && azimut <= 270 + 90 / 2.0) {
+            compass = "W";
+        }
     }
 
     @Override
