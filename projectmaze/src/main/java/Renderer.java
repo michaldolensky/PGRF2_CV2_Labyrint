@@ -1,5 +1,8 @@
 import blocks.Teleporter;
-import com.jogamp.opengl.*;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
@@ -154,13 +157,12 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     // <editor-fold defaultstate="collapsed" desc=" Object Data generation ">
     private void maze(GL2 gl) {
         int y = 0;
-        for (Object[][] level : curMaze.getLevels()) {
+        for (AbstractBlock[][] level : curMaze.getLevels()) {
             int size = curMaze.getSquareSize();
             for (int x = 0; x < level.length; x++) {
                 for (int z = 0; z < level.length; z++) {
 
-                    if (level[x][z] instanceof Integer ) {
-                        if((int) level[x][z] == 0){
+                    if (level[z][x] instanceof Hall) {
 
                         //Hall
 //                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
