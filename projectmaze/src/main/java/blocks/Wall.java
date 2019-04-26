@@ -16,6 +16,9 @@ public class Wall extends AbstractBlock {
     private int y;
     private int z;
 
+    public Wall() {
+        colide = true;
+    }
 
     public Wall init(GL2 gl, AbstractMaze maze, int[][] level, Vec3D position) {
         this.gl = gl;
