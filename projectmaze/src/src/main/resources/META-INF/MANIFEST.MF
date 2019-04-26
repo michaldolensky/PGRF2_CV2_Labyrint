@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Class-Path: jogl-all-2.3.2-natives-linux-armv6.jar jogl-all-2.3.2-nati
+ ves-linux-amd64.jar jogl-all-2.3.2-natives-windows-i586.jar gluegen-r
+ t-2.3.2-natives-macosx-universal.jar jogl-all-main-2.3.2.jar gluegen-
+ rt-main-2.3.2.jar gluegen-rt-2.3.2-natives-linux-armv6.jar gluegen-rt
+ -2.3.2-natives-solaris-i586.jar jogl-all-2.3.2-natives-android-armv6.
+ jar gluegen-rt-2.3.2-natives-linux-amd64.jar jogl-all-2.3.2.jar glueg
+ en-rt-2.3.2-natives-linux-armv6hf.jar gluegen-rt-2.3.2-natives-linux-
+ i586.jar gluegen-rt-2.3.2.jar jogl-all-2.3.2-natives-windows-amd64.ja
+ r gluegen-rt-2.3.2-natives-android-aarch64.jar gluegen-rt-2.3.2-nativ
+ es-solaris-amd64.jar jogl-all-2.3.2-natives-linux-armv6hf.jar gluegen
+ -rt-2.3.2-natives-android-armv6.jar jogl-all-2.3.2-natives-linux-i586
+ .jar jogl-all-2.3.2-natives-android-aarch64.jar gluegen-rt-2.3.2-nati
+ ves-windows-amd64.jar jogl-all-2.3.2-natives-solaris-i586.jar gluegen
+ -rt-2.3.2-natives-windows-i586.jar jogl-all-2.3.2-natives-macosx-univ
+ ersal.jar jogl-all-2.3.2-natives-solaris-amd64.jar
+Main-Class: App
+
