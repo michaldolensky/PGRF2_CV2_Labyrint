@@ -1,4 +1,7 @@
+import blocks.AbstractBlock;
+import blocks.Hall;
 import blocks.Teleporter;
+import blocks.Wall;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -11,6 +14,7 @@ import maze.AbstractMaze;
 import maze.Maze1;
 import maze.Player;
 import transforms.Point3D;
+import utils.DS;
 import utils.OglUtils;
 
 import javax.swing.*;
@@ -128,10 +132,11 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
 
         //fixme
-        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
+//        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glEnable(GL2.GL_LIGHT0);
+//        gl.glEnable(GL2.GL_LIGHTING);
+//        gl.glEnable(GL2.GL_LIGHT0);
         // </editor-fold>
 
         /* make the objects */
@@ -161,206 +166,137 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
             int size = curMaze.getSquareSize();
             for (int x = 0; x < level.length; x++) {
                 for (int z = 0; z < level.length; z++) {
+                    int ZSS = x * size + size;
+                    int XSS = z * size + size;
+                    int ZS0 = x * size;
+                    int XS0 = z * size;
+                    int YPS = y + size;
 
                     if (level[z][x] instanceof Hall) {
-
-                        //Hall
-//                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
                         if (texture.get(0) != null) {
                             texture.get(0).enable(gl);
                             texture.get(0).bind(gl);
-//                                TextureCoords coords = texture[0].getImageTexCoords();
-
-                            gl.glBegin(GL2.GL_QUADS);
-                            gl.glColor3f(0.0f, 0.0f, 1.0f);
-                            gl.glTexCoord2f(0, 1);
-                            gl.glVertex3d(x * size, y, z * size);
-                            gl.glTexCoord2f(1, 1);
-                            gl.glVertex3d(size * x + size, y, z * size);
-                            gl.glTexCoord2f(1, 0);
-                            gl.glVertex3d(x * size + size, y, z * size + size);
-                            gl.glTexCoord2f(0, 0);
-                            gl.glVertex3d(x * size, y, size * z + size);
-
-                            gl.glEnd();
-
+                            DS.drawFlatSquare(gl, ZS0, XS0, y, ZSS, XSS);
                             texture.get(0).disable(gl);
                         }
                         if (texture.get(6) != null) {
                             texture.get(6).enable(gl);
                             texture.get(6).bind(gl);
-//                                TextureCoords coords = texture[0].getImageTexCoords();
-
-                            gl.glBegin(GL2.GL_QUADS);
-                            gl.glColor3f(0.0f, 0.0f, 1.0f);
-                            gl.glTexCoord2f(0, 1);
-                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), z * size);
-                            gl.glTexCoord2f(1, 1);
-                            gl.glVertex3d(size * x + size, y + curMaze.getSquareSize(), z * size);
-                            gl.glTexCoord2f(1, 0);
-                            gl.glVertex3d(x * size + size, y + curMaze.getSquareSize(), z * size + size);
-                            gl.glTexCoord2f(0, 0);
-                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), size * z + size);
-
-                            gl.glEnd();
-
+                            DS.drawFlatSquare(gl, ZS0, XS0, YPS, ZSS, XSS);
                             texture.get(6).disable(gl);
-                        }}
-                        //Wall
-                        if ( (int) level[x][z] == 1) {//                            new Wall().init(gl, curMaze, level, new Vec3D(x, y, z)).draw();
-
-
-
-
-
-                            if (x + 1 < level.length && (int) level[x + 1][z] != 1) {
-                                if (texture.get(1) != null) {
-                                    texture.get(1).enable(gl);
-                                    texture.get(1).bind(gl);
-                                    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
-                                    gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
-                                    gl.glBegin(GL2.GL_QUADS);
-                                    gl.glColor3f(0.0f, 1.0f, 1.0f);
-                                    gl.glTexCoord2f(4, 0);
-                                    gl.glVertex3i(size * x + size, y, z * size);
-                                    gl.glTexCoord2f(0, 0);
-                                    gl.glVertex3i(x * size + size, y, z * size + size);
-                                    gl.glTexCoord2f(0, 4);
-                                    gl.glVertex3i(x * size + size, y + size, z * size + size);
-                                    gl.glTexCoord2f(4, 4);
-                                    gl.glVertex3i(size * x + size, y + size, z * size);
-                                    gl.glEnd();
-                                    texture.get(1).disable(gl);
-                                }
-                            }
-                            //magenta
-                            if (x - 1 > -1 && (int)level[x - 1][z] != 1) {
-                                if (texture.get(2) != null) {
-                                    texture.get(2).enable(gl);
-                                    texture.get(2).bind(gl);
-                                    gl.glBegin(GL2.GL_QUADS);
-                                    gl.glColor3f(1.0f, 0.0f, 1.0f);
-                                    gl.glTexCoord2f(0, 1);
-                                    gl.glVertex3i(x * size, y + size, z * size);
-                                    gl.glTexCoord2f(1, 1);
-                                    gl.glVertex3i(x * size, y + size, z * size + size);
-                                    gl.glTexCoord2f(1, 0);
-                                    gl.glVertex3i(x * size, y, z * size + size);
-                                    gl.glTexCoord2f(0, 0);
-                                    gl.glVertex3i(x * size, y, z * size);
-                                    gl.glEnd();
-                                    texture.get(2).disable(gl);
-                                }
-                            }
-                            //green
-                            if (z - 1 > -1 && (int)level[x][z - 1] != 1) {
-                                if (texture.get(3) != null) {
-                                    texture.get(3).enable(gl);
-                                    texture.get(3).bind(gl);
-                                    gl.glBegin(GL2.GL_QUADS);
-                                    gl.glColor3f(0.0f, 1.0f, 0.0f);
-                                    gl.glTexCoord2f(0, 1);
-                                    gl.glVertex3i(x * size, y, z * size);
-                                    gl.glTexCoord2f(1, 1);
-                                    gl.glVertex3i(size * x + size, y, z * size);
-                                    gl.glTexCoord2f(1, 0);
-                                    gl.glVertex3i(size * x + size, y + size, z * size);
-                                    gl.glTexCoord2f(0, 0);
-                                    gl.glVertex3i(x * size, y + size, z * size);
-                                    gl.glEnd();
-                                    texture.get(3).disable(gl);
-                                }
-                            }
-                            //yellow
-                            if (z + 1 < level.length && (int)level[x][z + 1] != 1) {
-                                if (texture.get(4) != null) {
-                                    texture.get(4).enable(gl);
-                                    texture.get(4).bind(gl);
-                                    gl.glBegin(GL2.GL_QUADS);
-                                    gl.glColor3f(1.0f, 1.0f, 0.0f);
-                                    gl.glTexCoord2f(0, 1);
-                                    gl.glVertex3i(x * size, y + size, z * size + size);
-                                    gl.glTexCoord2f(1, 1);
-                                    gl.glVertex3i(x * size + size, y + size, z * size + size);
-                                    gl.glTexCoord2f(1, 0);
-                                    gl.glVertex3i(x * size + size, y, z * size + size);
-                                    gl.glTexCoord2f(0, 0);
-                                    gl.glVertex3i(x * size, y, z * size + size);
-                                    gl.glEnd();
-                                    texture.get(4).disable(gl);
-                                }
-                            }
-//                            //top of wall
-//                            if (texture.get(5) != null) {
-//                                texture.get(5).enable(gl);
-//                                texture.get(5).bind(gl);
-//                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
-//                                gl.glBegin(GL2.GL_QUADS);
-//                                gl.glColor3f(1.0f, 0.0f, 0.0f);
-//                                gl.glTexCoord2f(0, 1);
-//                                gl.glVertex3i(x * size, y + size, z * size);
-//                                gl.glTexCoord2f(1, 1);
-//                                gl.glVertex3i(size * x + size, y + size, z * size);
-//                                gl.glTexCoord2f(1, 0);
-//                                gl.glVertex3i(x * size + size, y + size, z * size + size);
-//                                gl.glTexCoord2f(0, 0);
-//                                gl.glVertex3i(x * size, y + size, z * size + size);
-//                                gl.glEnd();
-//                                texture.get(5).disable(gl);
-//                            }
                         }
                     }
-
-
-
-                    if (level[x][z] instanceof Teleporter) {
-//                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
+                    if (level[z][x] instanceof Teleporter) {
                         if (texture.get(7) != null) {
                             texture.get(7).enable(gl);
                             texture.get(7).bind(gl);
-                            gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
-//                                TextureCoords coords = texture[0].getImageTexCoords();
-
-                            gl.glBegin(GL2.GL_QUADS);
-                            gl.glColor3f(0.0f, 0.0f, 1.0f);
-                            gl.glTexCoord2f(0, 1);
-                            gl.glVertex3d(x * size, y, z * size);
-                            gl.glTexCoord2f(1, 1);
-                            gl.glVertex3d(size * x + size, y, z * size);
-                            gl.glTexCoord2f(1, 0);
-                            gl.glVertex3d(x * size + size, y, z * size + size);
-                            gl.glTexCoord2f(0, 0);
-                            gl.glVertex3d(x * size, y, size * z + size);
-
-                            gl.glEnd();
-
+                            DS.drawFlatSquare(gl, ZS0, XS0, y, ZSS, XSS);
                             texture.get(7).disable(gl);
                         }
                         if (texture.get(7) != null) {
                             texture.get(7).enable(gl);
                             texture.get(7).bind(gl);
-                            gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
-//                                TextureCoords coords = texture[0].getImageTexCoords();
-
-                            gl.glBegin(GL2.GL_QUADS);
-                            gl.glColor3f(0.0f, 0.0f, 1.0f);
-                            gl.glTexCoord2f(0, 1);
-                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), z * size);
-                            gl.glTexCoord2f(1, 1);
-                            gl.glVertex3d(size * x + size, y + curMaze.getSquareSize(), z * size);
-                            gl.glTexCoord2f(1, 0);
-                            gl.glVertex3d(x * size + size, y + curMaze.getSquareSize(), z * size + size);
-                            gl.glTexCoord2f(0, 0);
-                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), size * z + size);
-
-                            gl.glEnd();
-
+                            DS.drawFlatSquare(gl, ZS0, XS0, YPS, ZSS, XSS);
                             texture.get(7).disable(gl);
                         }
-
-
                     }
-
+                    if (level[z][x] instanceof Wall) {
+                        //north - cyan - wood
+                        if (z + 1 < level.length && level[z + 1][x].isCreateWall()) {
+                            if (texture.get(1) != null) {
+                                texture.get(1).enable(gl);
+                                texture.get(1).bind(gl);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+                                gl.glBegin(GL2.GL_QUADS);
+                                gl.glColor3f(0.0f, 1.0f, 1.0f);
+                                gl.glTexCoord2f(4, 0);
+                                gl.glVertex3i(ZS0, y, XSS);
+                                gl.glTexCoord2f(0, 0);
+                                gl.glVertex3i(ZSS, y, XSS);
+                                gl.glTexCoord2f(0, 4);
+                                gl.glVertex3i(ZSS, YPS, XSS);
+                                gl.glTexCoord2f(4, 4);
+                                gl.glVertex3i(ZS0, YPS, XSS);
+                                gl.glEnd();
+                                texture.get(1).disable(gl);
+                            }
+                        }
+                        //south - magenta - bricks
+                        if (z - 1 > -1 && level[z - 1][x].isCreateWall()) {
+                            if (texture.get(2) != null) {
+                                texture.get(2).enable(gl);
+                                texture.get(2).bind(gl);
+                                gl.glBegin(GL2.GL_QUADS);
+                                gl.glColor3f(1.0f, 0.0f, 1.0f);
+                                gl.glTexCoord2f(0, 1);
+                                gl.glVertex3i(ZS0, YPS, XS0);
+                                gl.glTexCoord2f(1, 1);
+                                gl.glVertex3i(ZSS, YPS, XS0);
+                                gl.glTexCoord2f(1, 0);
+                                gl.glVertex3i(ZSS, y, XS0);
+                                gl.glTexCoord2f(0, 0);
+                                gl.glVertex3i(ZS0, y, XS0);
+                                gl.glEnd();
+                                texture.get(2).disable(gl);
+                            }
+                        }
+                        //east - green -- cobble
+                        if (x - 1 > -1 && level[z][x - 1].isCreateWall()) {
+                            if (texture.get(3) != null) {
+                                texture.get(3).enable(gl);
+                                texture.get(3).bind(gl);
+                                gl.glBegin(GL2.GL_QUADS);
+                                gl.glColor3f(0.0f, 1.0f, 0.0f);
+                                gl.glTexCoord2f(0, 1);
+                                gl.glVertex3i(ZS0, y, XS0);
+                                gl.glTexCoord2f(1, 1);
+                                gl.glVertex3i(ZS0, y, XSS);
+                                gl.glTexCoord2f(1, 0);
+                                gl.glVertex3i(ZS0, YPS, XSS);
+                                gl.glTexCoord2f(0, 0);
+                                gl.glVertex3i(ZS0, YPS, XS0);
+                                gl.glEnd();
+                                texture.get(3).disable(gl);
+                            }
+                        }
+                        //west - yellow - blue_concrete_powder
+                        if (x + 1 < level.length && level[z][x + 1].isCreateWall()) {
+                            if (texture.get(4) != null) {
+                                texture.get(4).enable(gl);
+                                texture.get(4).bind(gl);
+                                gl.glBegin(GL2.GL_QUADS);
+                                gl.glColor3f(1.0f, 1.0f, 0.0f);
+                                gl.glTexCoord2f(0, 1);
+                                gl.glVertex3i(ZSS, YPS, XS0);
+                                gl.glTexCoord2f(1, 1);
+                                gl.glVertex3i(ZSS, YPS, XSS);
+                                gl.glTexCoord2f(1, 0);
+                                gl.glVertex3i(ZSS, y, XSS);
+                                gl.glTexCoord2f(0, 0);
+                                gl.glVertex3i(ZSS, y, XS0);
+                                gl.glEnd();
+                                texture.get(4).disable(gl);
+                            }
+                        }
+//                        //top of wall
+//                        if (texture.get(5) != null) {
+//                            texture.get(5).enable(gl);
+//                            texture.get(5).bind(gl);
+//                            gl.glBegin(GL2.GL_QUADS);
+//                            gl.glColor3f(1.0f, 0.0f, 0.0f);
+//                            gl.glTexCoord2f(0, 1);
+//                            gl.glVertex3i(ZS0, YPS, XS0);
+//                            gl.glTexCoord2f(1, 1);
+//                            gl.glVertex3i(ZSS, YPS, XS0);
+//                            gl.glTexCoord2f(1, 0);
+//                            gl.glVertex3i(ZSS, YPS, XSS);
+//                            gl.glTexCoord2f(0, 0);
+//                            gl.glVertex3i(ZS0, YPS, XSS);
+//                            gl.glEnd();
+//                            texture.get(5).disable(gl);
+//                        }
+                    }
                 }
             }
             y += curMaze.getHeightBetweenLevels();
@@ -555,7 +491,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 free = !free;
                 //Returns player to playing height
                 if (!free)
-                    player.getPos().setY(curMaze.getPlayer().getCurrentLevel() * curMaze.getHeightBetweenLevels() + curMaze.PLAYER_OFFSET.getY() * curMaze.getSquareSize());
+                    player.getPos().setY(curMaze.getPlayer().getCurLev() * curMaze.getHeightBetweenLevels() + curMaze.PLAYER_OFFSET.getY() * curMaze.getSquareSize());
                 break;
             case KeyEvent.VK_P:
                 per = !per;

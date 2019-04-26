@@ -5,8 +5,9 @@ import transforms.Point3D;
 public class Teleporter extends AbstractBlock{
     private Point3D teleportTo;
 
-    public Teleporter(Point3D teleportTo) {
-        this.teleportTo = teleportTo;
+    public Teleporter(int z, int y, int x) {
+        createWall = true;
+        this.teleportTo = new Point3D(x, y, z);
     }
 
     public Point3D getTeleportTo() {

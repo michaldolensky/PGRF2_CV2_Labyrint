@@ -1,5 +1,7 @@
 package maze;
 
+import blocks.AbstractBlock;
+import blocks.Teleporter;
 import transforms.Point3D;
 
 import java.io.Serializable;
@@ -13,7 +15,7 @@ public class AbstractMaze implements Serializable {
     private int squareSize = 40;
     private int heightBetweenLevels = 100;
     private Point3D startPosition;
-    private List<Object[][]> levels = new ArrayList<>();
+    private List<AbstractBlock[][]> levels = new ArrayList<>();
     private List<String> textureUls = new ArrayList<>();
     private Player player = new Player();
 
@@ -26,13 +28,13 @@ public class AbstractMaze implements Serializable {
         if (posZ - curPosZ > 0) {
             posZ = (z + COLLISION_SIZE) / squareSize;
         } else posZ = (z - COLLISION_SIZE) / squareSize;
-        if ((int)levels.get(player.getCurrentLevel())[(int) posX][(int) posZ] != 1) player.getPos().setZ(z);
+        if (!levels.get(player.getCurLev())[(int) posZ][(int) posX].hasCollision()) player.getPos().setZ(z);
 
         posZ = z / squareSize;
         if (posX - curPosX > 0) {
             posX = (x + COLLISION_SIZE) / squareSize;
         } else posX = (x - COLLISION_SIZE) / squareSize;
-        if ((int)levels.get(player.getCurrentLevel())[(int) posX][(int) posZ] != 1) player.getPos().setX(x);
+        if (!levels.get(player.getCurLev())[(int) posZ][(int) posX].hasCollision()) player.getPos().setX(x);
 
 
         System.out.println("-----");
@@ -42,16 +44,18 @@ public class AbstractMaze implements Serializable {
         System.out.println("posZ = " + posZ);
         System.out.println("curPosX = " + curPosX);
         System.out.println("curPosZ = " + curPosZ);
-        System.out.println("curMaze.getLevels().get(0)[posX][posZ] = " + levels.get(0)[(int) posX][(int) posZ]);
+        System.out.println("curMaze.getLevels().get(0)[posZ][posX] = " + levels.get(0)[(int) posZ][(int) posX].getClass().getName());
+        System.out.println("player.getCurLev() = " + player.getCurLev());
     }
 
     /**
      * @return Returns Block at player if is inside the maze, else returns null
      */
-    public Object getCurrentBlockAtPlayerLocation() {
-        if (player.getPX() < 0 || player.getPZ() < 0 || player.getPX()>levels.get(player.getCurrentLevel()).length*squareSize ||player.getPZ()>levels.get(player.getCurrentLevel()).length*squareSize ) return null;
+    public AbstractBlock getCurrentBlockAtPlayerLocation() {
+        if (player.getPX() < 0 || player.getPZ() < 0 || player.getPX() > levels.get(player.getCurLev()).length * squareSize || player.getPZ() > levels.get(player.getCurLev()).length * squareSize)
+            return null;
         else
-            return levels.get(player.getCurrentLevel())[(int) player.getPX() / squareSize][(int) player.getPZ() / squareSize];
+            return levels.get(player.getCurLev())[(int) player.getPZ() / squareSize][(int) player.getPX() / squareSize];
     }
 
     /**
@@ -76,8 +80,7 @@ public class AbstractMaze implements Serializable {
     }
 
 
-
-    public List<Object[][]> getLevels() {
+    public List<AbstractBlock[][]> getLevels() {
         return levels;
     }
 

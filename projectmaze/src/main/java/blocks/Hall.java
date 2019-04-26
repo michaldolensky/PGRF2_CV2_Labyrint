@@ -15,6 +15,10 @@ public class Hall extends AbstractBlock {
     Vec3D color;
     AbstractMaze maze;
 
+    public Hall() {
+        createWall = true;
+    }
+
     public Hall init(GL2 gl, AbstractMaze maze, Vec3D position, Vec3D color) {
         this.gl = gl;
         this.size = maze.getSquareSize();
