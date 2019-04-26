@@ -15,7 +15,17 @@ public class ColisionTestMaze extends AbstractMaze {
             {new Wall(), new Wall(), new Wall(), new Wall(), new Wall()}
     };
     public ColisionTestMaze() {
+        setStartPosition(new Point3D(1, 0, 2));
+        getPlayer().setPos(calcPos(getStartPosition()));
         getLevels().add(level0);
-        setStartPosition(new Point3D(1, 0, 1));
+        getPlayer().setCurrentLevel(0);
+        getTextureUls().add("textures/block/black_wool.png");
+        getTextureUls().add("textures/block/acacia_planks.png");
+        getTextureUls().add("textures/block/bricks.png");
+        getTextureUls().add("textures/block/cobblestone.png");
+        getTextureUls().add("textures/block/concrete_powder/blue_concrete_powder.png");
+        getTextureUls().add("textures/block/water_still.png");
+        getTextureUls().add("textures/block/clay.png");
+        getTextureUls().add("textures/block/piston_inner.png");
     }
 }
