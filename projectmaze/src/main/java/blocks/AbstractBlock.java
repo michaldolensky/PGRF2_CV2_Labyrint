@@ -4,11 +4,11 @@ import com.jogamp.opengl.util.texture.Texture;
 
 public class AbstractBlock{
     Texture texTop;
-    boolean colide = false;
+    boolean collision = false;
 
 
-    public boolean isColide() {
-        return colide;
+    public boolean hasCollision() {
+        return collision;
     }
 
 
