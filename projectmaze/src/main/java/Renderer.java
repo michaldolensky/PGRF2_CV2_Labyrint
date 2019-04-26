@@ -1,3 +1,4 @@
+import blocks.Teleporter;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -146,33 +147,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         }
         // </editor-fold>
 
-        //        // <editor-fold defaultstate="collapsed" desc=" Player Position ">
-//
-//        if (0 >= debPlayerPos) {
-//            debPlayerPos = gl.glGenLists(1);
-//            gl.glNewList(debPlayerPos, GL2.GL_COMPILE);
-//            gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, brown, 0);
-//            debPlayerPos(gl);
-//            gl.glEndList();
-//            System.err.println("box list created: " + debPlayerPos);
-//        } else {
-//            System.err.println("box list reused: " + debPlayerPos);
-//        }
-//        // </editor-fold>
-        //        // <editor-fold defaultstate="collapsed" desc=" Player Start Position ">
-//        if (0 >= debPlayerStartPos) {
-//            debPlayerStartPos = gl.glGenLists(1);
-//            gl.glNewList(debPlayerStartPos, GL2.GL_COMPILE);
-//            gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, red, 0);
-//            debPlayerStartPos(gl);
-//            gl.glEndList();
-//            System.err.println("mydesk list created: " + debPlayerStartPos);
-//        } else {
-//            System.err.println("mydesk list reused: " + debPlayerStartPos);
-//        }
-//        // </editor-fold>
-
-        // </editor-fold>
 
         gl.glEnable(GL2.GL_NORMALIZE);
     }
@@ -180,106 +154,64 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     // <editor-fold defaultstate="collapsed" desc=" Object Data generation ">
     private void maze(GL2 gl) {
         int y = 0;
-        for (int[][] level : curMaze.getLevels()) {
+        for (Object[][] level : curMaze.getLevels()) {
             int size = curMaze.getSquareSize();
             for (int x = 0; x < level.length; x++) {
                 for (int z = 0; z < level.length; z++) {
-                    switch (level[x][z]) {
+
+                    if (level[x][z] instanceof Integer ) {
+                        if((int) level[x][z] == 0){
+
                         //Hall
-                        case 0:
 //                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
-                            if (texture.get(0) != null) {
-                                texture.get(0).enable(gl);
-                                texture.get(0).bind(gl);
+                        if (texture.get(0) != null) {
+                            texture.get(0).enable(gl);
+                            texture.get(0).bind(gl);
 //                                TextureCoords coords = texture[0].getImageTexCoords();
 
-                                gl.glBegin(GL2.GL_QUADS);
-                                gl.glColor3f(0.0f, 0.0f, 1.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3d(x * size, y, z * size);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3d(size * x + size, y, z * size);
-                                gl.glTexCoord2f(1, 0);
-                                gl.glVertex3d(x * size + size, y, z * size + size);
-                                gl.glTexCoord2f(0, 0);
-                                gl.glVertex3d(x * size, y, size * z + size);
+                            gl.glBegin(GL2.GL_QUADS);
+                            gl.glColor3f(0.0f, 0.0f, 1.0f);
+                            gl.glTexCoord2f(0, 1);
+                            gl.glVertex3d(x * size, y, z * size);
+                            gl.glTexCoord2f(1, 1);
+                            gl.glVertex3d(size * x + size, y, z * size);
+                            gl.glTexCoord2f(1, 0);
+                            gl.glVertex3d(x * size + size, y, z * size + size);
+                            gl.glTexCoord2f(0, 0);
+                            gl.glVertex3d(x * size, y, size * z + size);
 
-                                gl.glEnd();
+                            gl.glEnd();
 
-                                texture.get(0).disable(gl);
-                            }
-                            if (texture.get(6) != null) {
-                                texture.get(6).enable(gl);
-                                texture.get(6).bind(gl);
+                            texture.get(0).disable(gl);
+                        }
+                        if (texture.get(6) != null) {
+                            texture.get(6).enable(gl);
+                            texture.get(6).bind(gl);
 //                                TextureCoords coords = texture[0].getImageTexCoords();
 
-                                gl.glBegin(GL2.GL_QUADS);
-                                gl.glColor3f(0.0f, 0.0f, 1.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3d(x * size, y + curMaze.getSquareSize(), z * size);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3d(size * x + size, y + curMaze.getSquareSize(), z * size);
-                                gl.glTexCoord2f(1, 0);
-                                gl.glVertex3d(x * size + size, y + curMaze.getSquareSize(), z * size + size);
-                                gl.glTexCoord2f(0, 0);
-                                gl.glVertex3d(x * size, y + curMaze.getSquareSize(), size * z + size);
+                            gl.glBegin(GL2.GL_QUADS);
+                            gl.glColor3f(0.0f, 0.0f, 1.0f);
+                            gl.glTexCoord2f(0, 1);
+                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), z * size);
+                            gl.glTexCoord2f(1, 1);
+                            gl.glVertex3d(size * x + size, y + curMaze.getSquareSize(), z * size);
+                            gl.glTexCoord2f(1, 0);
+                            gl.glVertex3d(x * size + size, y + curMaze.getSquareSize(), z * size + size);
+                            gl.glTexCoord2f(0, 0);
+                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), size * z + size);
 
-                                gl.glEnd();
+                            gl.glEnd();
 
-                                texture.get(6).disable(gl);
-                            }
-
-
-                            break;
-                        case 3:
-//                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
-                            if (texture.get(7) != null) {
-                                texture.get(7).enable(gl);
-                                texture.get(7).bind(gl);
-//                                TextureCoords coords = texture[0].getImageTexCoords();
-
-                                gl.glBegin(GL2.GL_QUADS);
-                                gl.glColor3f(0.0f, 0.0f, 1.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3d(x * size, y, z * size);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3d(size * x + size, y, z * size);
-                                gl.glTexCoord2f(1, 0);
-                                gl.glVertex3d(x * size + size, y, z * size + size);
-                                gl.glTexCoord2f(0, 0);
-                                gl.glVertex3d(x * size, y, size * z + size);
-
-                                gl.glEnd();
-
-                                texture.get(7).disable(gl);
-                            }
-                            if (texture.get(7) != null) {
-                                texture.get(7).enable(gl);
-                                texture.get(7).bind(gl);
-//                                TextureCoords coords = texture[0].getImageTexCoords();
-
-                                gl.glBegin(GL2.GL_QUADS);
-                                gl.glColor3f(0.0f, 0.0f, 1.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3d(x * size, y + curMaze.getSquareSize(), z * size);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3d(size * x + size, y + curMaze.getSquareSize(), z * size);
-                                gl.glTexCoord2f(1, 0);
-                                gl.glVertex3d(x * size + size, y + curMaze.getSquareSize(), z * size + size);
-                                gl.glTexCoord2f(0, 0);
-                                gl.glVertex3d(x * size, y + curMaze.getSquareSize(), size * z + size);
-
-                                gl.glEnd();
-
-                                texture.get(7).disable(gl);
-                            }
-
-
-                            break;
+                            texture.get(6).disable(gl);
+                        }}
                         //Wall
-                        case 1:
-//                            new Wall().init(gl, curMaze, level, new Vec3D(x, y, z)).draw();
-                            if (x + 1 < level.length && level[x + 1][z] != 1) {
+                        if ( (int) level[x][z] == 1) {//                            new Wall().init(gl, curMaze, level, new Vec3D(x, y, z)).draw();
+
+
+
+
+
+                            if (x + 1 < level.length && (int) level[x + 1][z] != 1) {
                                 if (texture.get(1) != null) {
                                     texture.get(1).enable(gl);
                                     texture.get(1).bind(gl);
@@ -299,9 +231,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                     texture.get(1).disable(gl);
                                 }
                             }
-
                             //magenta
-                            if (x - 1 > -1 && level[x - 1][z] != 1) {
+                            if (x - 1 > -1 && (int)level[x - 1][z] != 1) {
                                 if (texture.get(2) != null) {
                                     texture.get(2).enable(gl);
                                     texture.get(2).bind(gl);
@@ -320,7 +251,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                 }
                             }
                             //green
-                            if (z - 1 > -1 && level[x][z - 1] != 1) {
+                            if (z - 1 > -1 && (int)level[x][z - 1] != 1) {
                                 if (texture.get(3) != null) {
                                     texture.get(3).enable(gl);
                                     texture.get(3).bind(gl);
@@ -339,7 +270,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                 }
                             }
                             //yellow
-                            if (z + 1 < level.length && level[x][z + 1] != 1) {
+                            if (z + 1 < level.length && (int)level[x][z + 1] != 1) {
                                 if (texture.get(4) != null) {
                                     texture.get(4).enable(gl);
                                     texture.get(4).bind(gl);
@@ -361,6 +292,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //                            if (texture.get(5) != null) {
 //                                texture.get(5).enable(gl);
 //                                texture.get(5).bind(gl);
+//                                gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 //                                gl.glBegin(GL2.GL_QUADS);
 //                                gl.glColor3f(1.0f, 0.0f, 0.0f);
 //                                gl.glTexCoord2f(0, 1);
@@ -374,9 +306,59 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //                                gl.glEnd();
 //                                texture.get(5).disable(gl);
 //                            }
-                            break;
+                        }
+                    }
+
+
+
+                    if (level[x][z] instanceof Teleporter) {
+//                            new Hall().init(gl, maze, new Vec3D(x, y, z), new Vec3D(0, 0, 1)).draw();
+                        if (texture.get(7) != null) {
+                            texture.get(7).enable(gl);
+                            texture.get(7).bind(gl);
+                            gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+//                                TextureCoords coords = texture[0].getImageTexCoords();
+
+                            gl.glBegin(GL2.GL_QUADS);
+                            gl.glColor3f(0.0f, 0.0f, 1.0f);
+                            gl.glTexCoord2f(0, 1);
+                            gl.glVertex3d(x * size, y, z * size);
+                            gl.glTexCoord2f(1, 1);
+                            gl.glVertex3d(size * x + size, y, z * size);
+                            gl.glTexCoord2f(1, 0);
+                            gl.glVertex3d(x * size + size, y, z * size + size);
+                            gl.glTexCoord2f(0, 0);
+                            gl.glVertex3d(x * size, y, size * z + size);
+
+                            gl.glEnd();
+
+                            texture.get(7).disable(gl);
+                        }
+                        if (texture.get(7) != null) {
+                            texture.get(7).enable(gl);
+                            texture.get(7).bind(gl);
+                            gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+//                                TextureCoords coords = texture[0].getImageTexCoords();
+
+                            gl.glBegin(GL2.GL_QUADS);
+                            gl.glColor3f(0.0f, 0.0f, 1.0f);
+                            gl.glTexCoord2f(0, 1);
+                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), z * size);
+                            gl.glTexCoord2f(1, 1);
+                            gl.glVertex3d(size * x + size, y + curMaze.getSquareSize(), z * size);
+                            gl.glTexCoord2f(1, 0);
+                            gl.glVertex3d(x * size + size, y + curMaze.getSquareSize(), z * size + size);
+                            gl.glTexCoord2f(0, 0);
+                            gl.glVertex3d(x * size, y + curMaze.getSquareSize(), size * z + size);
+
+                            gl.glEnd();
+
+                            texture.get(7).disable(gl);
+                        }
+
 
                     }
+
                 }
             }
             y += curMaze.getHeightBetweenLevels();
@@ -424,7 +406,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">
         gl.glPushMatrix();
         Point3D sP = curMaze.calcPos(curMaze.getStartPosition());
-        gl.glColor3f(1, 1, 1);
+        gl.glColor3f(1, 0, 1);
         gl.glTranslated(sP.getX(), sP.getY(), sP.getZ());
         glut.glutWireCube(5);
         gl.glPopMatrix();
@@ -453,7 +435,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 
         if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
-            if (curMaze.getCurrentBlockAtPlayerLocation() == 3) {
+            if (curMaze.getCurrentBlockAtPlayerLocation() instanceof Teleporter) {
                 OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
             }
         }
@@ -477,11 +459,12 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     private void checkForTeleport() {
         if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
-            if ((curMaze.getCurrentBlockAtPlayerLocation() == 3)) {
-                curMaze.movePlayer(1, 1, 1);
+            if ((curMaze.getCurrentBlockAtPlayerLocation() instanceof Teleporter)) {
+                curMaze.movePlayer(((Teleporter) curMaze.getCurrentBlockAtPlayerLocation()).getTeleportTo());
             }
         }
     }
+
     // <editor-fold defaultstate="collapsed" desc=" Controls ">
     @Override
     public void mousePressed(MouseEvent e) {

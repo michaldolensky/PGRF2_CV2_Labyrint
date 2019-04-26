@@ -1,5 +1,6 @@
 package maze;
 
+import blocks.Teleporter;
 import transforms.Point3D;
 
 public class Maze1 extends AbstractMaze {
@@ -7,10 +8,10 @@ public class Maze1 extends AbstractMaze {
     public Maze1() {
         setStartPosition(new Point3D(1, 0, 1));
         getPlayer().setPos(calcPos(getStartPosition()));
-        int[][] level0 = new int[][]{
+        Object[][] level0 = new Object[][]{
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 3, 1, 1, 1, 1, 1, 1, 0, 1},
+                {1, new Teleporter(new Point3D(1,1,1)), 1, 1, 1, 1, 1, 1, 0, 1},
                 {1, 0, 1, 0, 0, 0, 0, 1, 0, 1},
                 {1, 0, 1, 1, 0, 1, 0, 1, 0, 1},
                 {1, 0, 1, 0, 0, 1, 0, 1, 0, 1},
@@ -20,7 +21,7 @@ public class Maze1 extends AbstractMaze {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         };
         getLevels().add(level0);
-        int[][] level1 = new int[][]{
+        Object[][] level1 = new Object[][]{
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
@@ -33,7 +34,7 @@ public class Maze1 extends AbstractMaze {
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         };
         getLevels().add(level1);
-        int[][] level2 = new int[][]{
+        Object[][] level2 = new Object[][]{
                 {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 0, 1, 1, 1, 1, 1, 1, 1, 1},
                 {1, 0, 1, 1, 1, 1, 1, 1, 1, 1},

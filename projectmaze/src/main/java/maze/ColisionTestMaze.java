@@ -3,7 +3,7 @@ package maze;
 import transforms.Point3D;
 
 public class ColisionTestMaze extends AbstractMaze {
-    int[][] level0 = new int[][]{
+    Object[][] level0 = new Object[][]{
             {1,1,1,1,1},
             {1,0,0,0,1},
             {1,0,1,0,1},

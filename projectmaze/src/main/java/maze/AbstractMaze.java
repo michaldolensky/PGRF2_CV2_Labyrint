@@ -2,17 +2,18 @@ package maze;
 
 import transforms.Point3D;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractMaze {
+public class AbstractMaze implements Serializable {
 
     public final static int COLLISION_SIZE = 5;
     public final static Point3D PLAYER_OFFSET = new Point3D(0.5, 0.5, 0.5);
     private int squareSize = 40;
     private int heightBetweenLevels = 100;
     private Point3D startPosition;
-    private List<int[][]> levels = new ArrayList<>();
+    private List<Object[][]> levels = new ArrayList<>();
     private List<String> textureUls = new ArrayList<>();
     private Player player = new Player();
 
@@ -25,13 +26,13 @@ public class AbstractMaze {
         if (posZ - curPosZ > 0) {
             posZ = (z + COLLISION_SIZE) / squareSize;
         } else posZ = (z - COLLISION_SIZE) / squareSize;
-        if (levels.get(player.getCurrentLevel())[(int) posX][(int) posZ] != 1) player.getPos().setZ(z);
+        if ((int)levels.get(player.getCurrentLevel())[(int) posX][(int) posZ] != 1) player.getPos().setZ(z);
 
         posZ = z / squareSize;
         if (posX - curPosX > 0) {
             posX = (x + COLLISION_SIZE) / squareSize;
         } else posX = (x - COLLISION_SIZE) / squareSize;
-        if (levels.get(player.getCurrentLevel())[(int) posX][(int) posZ] != 1) player.getPos().setX(x);
+        if ((int)levels.get(player.getCurrentLevel())[(int) posX][(int) posZ] != 1) player.getPos().setX(x);
 
 
         System.out.println("-----");
@@ -47,7 +48,7 @@ public class AbstractMaze {
     /**
      * @return Returns Block at player if is inside the maze, else returns null
      */
-    public Integer getCurrentBlockAtPlayerLocation() {
+    public Object getCurrentBlockAtPlayerLocation() {
         if (player.getPX() < 0 || player.getPZ() < 0 || player.getPX()>levels.get(player.getCurrentLevel()).length*squareSize ||player.getPZ()>levels.get(player.getCurrentLevel()).length*squareSize ) return null;
         else
             return levels.get(player.getCurrentLevel())[(int) player.getPX() / squareSize][(int) player.getPZ() / squareSize];
@@ -62,9 +63,9 @@ public class AbstractMaze {
         player.setPos(calcPos(getStartPosition()));
     }
 
-    public void movePlayer(int x, int level, int z) {
-        player.setCurrentLevel(level);
-        player.setPos(calcPos(new Point3D(x, level, z)));
+    public void movePlayer(Point3D pos) {
+        player.setCurrentLevel((int)pos.getY());
+        player.setPos(calcPos(pos));
     }
 
     public Point3D calcPos(Point3D pos) {
@@ -76,7 +77,7 @@ public class AbstractMaze {
 
 
 
-    public List<int[][]> getLevels() {
+    public List<Object[][]> getLevels() {
         return levels;
     }
 
