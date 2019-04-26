@@ -122,4 +122,12 @@ public class AbstractMaze implements Serializable {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public void checkForTeleport() {
+        if (getCurrentBlockAtPlayerLocation() != null) {
+            if ((getCurrentBlockAtPlayerLocation() instanceof Teleporter)) {
+                movePlayer(((Teleporter) getCurrentBlockAtPlayerLocation()).getTeleportTo());
+            }
+        }
+    }
 }

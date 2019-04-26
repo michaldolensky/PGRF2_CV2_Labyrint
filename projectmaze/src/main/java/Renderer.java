@@ -459,14 +459,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glViewport(0, 0, this.width, this.height);
     }
 
-    private void checkForTeleport() {
-        if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
-            if ((curMaze.getCurrentBlockAtPlayerLocation() instanceof Teleporter)) {
-                curMaze.movePlayer(((Teleporter) curMaze.getCurrentBlockAtPlayerLocation()).getTeleportTo());
-            }
-        }
-    }
-
     // <editor-fold defaultstate="collapsed" desc=" Controls ">
     @Override
     public void mousePressed(MouseEvent e) {
@@ -569,7 +561,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 per = !per;
                 break;
             case KeyEvent.VK_E:
-                checkForTeleport();
+                curMaze.checkForTeleport();
                 break;
             case KeyEvent.VK_R:
                 curMaze.resetPlayer();
