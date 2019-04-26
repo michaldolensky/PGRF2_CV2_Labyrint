@@ -16,7 +16,7 @@ public class Player {
         this.pos = pos;
     }
 
-    public int getCurrentLevel() {
+    public int getCurLev() {
         return currentLevel;
     }
 
