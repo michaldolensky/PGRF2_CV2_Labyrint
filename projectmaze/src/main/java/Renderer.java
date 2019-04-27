@@ -51,6 +51,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private String compass = "";
 
     private int maze = 0, debPlayerPos = 0, debPlayerStartPos = 0;
+    private boolean fog = true;
 
 
     @Override
@@ -367,6 +368,24 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glCallList(maze);
         gl.glPopMatrix();
 
+        if (fog) {
+            //Fog
+            float Fog_distance = 250;
+            float[] Fog_colour = {0, 0, 0, 0};
+
+            gl.glEnable(GL2.GL_FOG);
+            gl.glHint(GL2.GL_FOG_HINT, GL2.GL_NICEST);
+
+            gl.glFogi(GL2.GL_FOG_MODE, GL2.GL_EXP2);
+
+            gl.glFogf(GL2.GL_FOG_DENSITY, 0.009f);
+            gl.glFogfv(GL2.GL_FOG_COLOR, Fog_colour, 0);
+            gl.glFogf(GL2.GL_FOG_START, Fog_distance - 50);
+            gl.glFogf(GL2.GL_FOG_END, Fog_distance);
+        } else {
+            gl.glDisable(GL2.GL_FOG);
+        }
+
         // <editor-fold defaultstate="collapsed" desc=" Draw text ">
         gl.glColor3f(1f, 1f, 1f);
         String text = this.getClass().getName() + ": [WSAD][lmb] camera";
@@ -374,6 +393,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         else text += ", [p]ersp ";
         if (free) text += ", [F]ree ";
         else text += ", [f]ree ";
+        if (fog) text += ", F[O]g ";
+        else text += ", F[o]g ";
 
         text += ", [R]eset player to start ";
 
@@ -507,6 +528,9 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 break;
             case KeyEvent.VK_R:
                 curMaze.resetPlayer();
+                break;
+            case KeyEvent.VK_O:
+                fog = !fog;
                 break;
         }
     }
