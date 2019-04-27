@@ -122,6 +122,12 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
         gl.glEnable(GL2.GL_TEXTURE_2D);
 
+        //
+        gl.glFrontFace(GL2.GL_CCW);
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+        gl.glPolygonMode(GL2.GL_BACK, GL2.GL_LINE);
+        gl.glDisable(GL2.GL_CULL_FACE);
+
         // Texture filter
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NONE);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NONE);
@@ -176,13 +182,13 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                         if (texture.get(0) != null) {
                             texture.get(0).enable(gl);
                             texture.get(0).bind(gl);
-                            DS.drawFlatSquare(gl, ZS0, XS0, y, ZSS, XSS);
+                            DS.drawFloor(gl, ZS0, XS0, y, ZSS, XSS);
                             texture.get(0).disable(gl);
                         }
                         if (texture.get(6) != null) {
                             texture.get(6).enable(gl);
                             texture.get(6).bind(gl);
-                            DS.drawFlatSquare(gl, ZS0, XS0, YPS, ZSS, XSS);
+                            DS.drawCeiling(gl, ZS0, XS0, YPS, ZSS, XSS);
                             texture.get(6).disable(gl);
                         }
                     }
@@ -190,13 +196,13 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                         if (texture.get(7) != null) {
                             texture.get(7).enable(gl);
                             texture.get(7).bind(gl);
-                            DS.drawFlatSquare(gl, ZS0, XS0, y, ZSS, XSS);
+                            DS.drawFloor(gl, ZS0, XS0, y, ZSS, XSS);
                             texture.get(7).disable(gl);
                         }
                         if (texture.get(7) != null) {
                             texture.get(7).enable(gl);
                             texture.get(7).bind(gl);
-                            DS.drawFlatSquare(gl, ZS0, XS0, YPS, ZSS, XSS);
+                            DS.drawCeiling(gl, ZS0, XS0, YPS, ZSS, XSS);
                             texture.get(7).disable(gl);
                         }
                     }
