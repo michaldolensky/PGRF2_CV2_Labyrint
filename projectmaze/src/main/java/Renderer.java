@@ -396,7 +396,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         if (fog) text += ", F[O]g ";
         else text += ", F[o]g ";
 
-        text += ", [R]eset player to start ";
+        text += ", [R]eset player to start";
 
 
         if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
