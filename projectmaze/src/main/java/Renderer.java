@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +53,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     private int maze = 0, debPlayerPos = 0, debPlayerStartPos = 0;
     private boolean fog = true;
+    private float[] light_position;
+    private int lx = 0, ly = 0;
 
 
     @Override
@@ -73,9 +76,9 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         float[] mat_specular =
                 {1.0f, 1.0f, 1.0f, 1.0f};
         float[] mat_shininess =
-                {25.0f};
-        float[] light_position =
-                {1.0f, 1.0f, 1.0f, 0.0f};
+                {50.0f};
+//        light_position = new float[]{1.0f, 1.0f, 1.0f, 0.0f};
+
 
         float[] red = {0.8f, 0.1f, 0.0f, 0.7f};
         float[] yellow = {0.8f, 0.75f, 0.0f, 0.7f};
@@ -136,14 +139,19 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //         Light and material
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position, 0);
+
+//        float[] light_amb = new float[]{1, 1, 1, 1};// nastaveni ambientni slozky
+//        float[] light_dif = new float[]{1, 1, 1, 1};// nastaveni difusni slozky
+//        float[] light_spec = new float[]{1, 1, 1, 1};// nastaveni zrcadlove slozky
+//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, light_amb, 0);
+//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light_dif, 0);
+//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, light_spec, 0);
 
         //fixme
-        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
-//        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+//        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
-//        gl.glEnable(GL2.GL_LIGHTING);
-//        gl.glEnable(GL2.GL_LIGHT0);
+
         // </editor-fold>
 
         /* make the objects */
@@ -347,6 +355,32 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //        gl.glPopMatrix();
         gl.glLoadIdentity();
         glu.gluLookAt(player.getPX(), player.getPY(), player.getPZ(), ex + player.getPX(), ey + player.getPY(), ez + player.getPZ(), ux, uy, uz);
+
+
+        float[] light2_pos = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1};
+        float[] light2_color_am = {0, 0, 1, 1};
+        float[] light2_color_diff = {1, 0, 0, 0};
+        float[] light2_color_spec = {1, 1, 1, 1};
+        float[] light2_spot_dir = {(float) ex, (float) ey, (float) ez};
+//        float[] light2_spot_dir = {0,0,1 };
+
+        System.out.println("light2_pos = " + Arrays.toString(light2_pos));
+        System.out.println("light2_spot_dir = " + Arrays.toString(light2_spot_dir));
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_POSITION, light2_pos, 0);
+        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_AMBIENT, light2_color_am, 0);
+        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_color_diff, 0);
+        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_color_spec, 0);
+
+        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPOT_DIRECTION, light2_spot_dir, 0);
+        gl.glLightf(GL2.GL_LIGHT2, GL2.GL_SPOT_CUTOFF, 20);
+        gl.glEnable(GL2.GL_LIGHT2);
+
+
+
+
+
+
 
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">
         gl.glPushMatrix();
