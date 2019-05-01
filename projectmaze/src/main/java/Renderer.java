@@ -291,7 +291,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
                         }
                     }
-                    if (b instanceof Wall) {
+//                    if (b instanceof Wall) {
 //                        //top of wall
 //                        if (texture.get(5) != null) {
 //                            texture.get(5).enable(gl);
@@ -309,7 +309,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //                            gl.glEnd();
 //                            texture.get(5).disable(gl);
 //                        }
-                    }
+//                    }
                 }
             }
             y += curMaze.getHeightBetweenLevels();
