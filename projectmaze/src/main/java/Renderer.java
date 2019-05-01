@@ -11,8 +11,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
-import maze.Player;
-import transforms.Point3D;
+import player.Player;
 import utils.DS;
 import utils.OglUtils;
 
@@ -36,18 +35,14 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private int height;
     private int ox, oy;
 
-    private float zenit = 0;
-    private float azimut = 0;
-    private double ex = 1, ey = 0, ez = 0, ux = 0, uy = 1, uz = 0;
-    private float step, trans = 0;
+
+    private float step;
     private boolean per = true, free = false;
-    private double a_rad;
     private long oldmils = System.currentTimeMillis();
 
     private List<Texture> texture;
     private AbstractMaze curMaze;
     private Player player;
-    private String compass = "";
 
     private int maze = 0, debPlayerPos = 0;
     //fixme:
@@ -246,6 +241,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                             }
                         }
                         //east - green -- cobble
+
                         if (level[z][x + 1] instanceof Wall) {
                             if (texture.get(b.getTexE()) != null) {
                                 texture.get(b.getTexE()).enable(gl);
@@ -332,7 +328,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         step = (mils - oldmils) / 1000.0f;
         //float fps = 1000 / (float) (mils - oldmils);
         oldmils = mils;
-        trans = 300 * step;
+        player.setTrans(300 * step);
 
         // vymazani obrazovky a Z-bufferu
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
@@ -348,7 +344,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 //        gl.glPopMatrix();
         gl.glLoadIdentity();
-        glu.gluLookAt(player.getPX(), player.getPY(), player.getPZ(), ex + player.getPX(), ey + player.getPY(), ez + player.getPZ(), ux, uy, uz);
+        player.look(glu);
 
 
         float[] light2_pos = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1};
@@ -369,11 +365,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPOT_DIRECTION, light2_spot_dir, 0);
         gl.glLightf(GL2.GL_LIGHT2, GL2.GL_SPOT_CUTOFF, 20);
         gl.glEnable(GL2.GL_LIGHT2);
-
-
-
-
-
 
 
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">
@@ -431,8 +422,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
         OglUtils.drawStr2D(glDrawable, 90, 3, " (c) Michal Dolenský 2019 | Textures:  © 2016 Sapix");
-        OglUtils.drawStr2D(glDrawable, width - 590, 3, String.format("%f|%f|%f||%f|%f|%f||%f|%f|%f", player.getPX(), player.getPY(), player.getPZ(), ex + player.getPX(), ey + player.getPY(), ez + player.getPZ(), ux, uy, uz));
-        OglUtils.drawStr2D(glDrawable, width / 2, height - 20, compass);
+        OglUtils.drawStr2D(glDrawable, width - 590, 3, player.getLookString());
+        OglUtils.drawStr2D(glDrawable, width / 2, height - 20, player.getDirection());
 
 
         // </editor-fold>
@@ -449,7 +440,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     // <editor-fold defaultstate="collapsed" desc=" Controls ">
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) ;
         ox = e.getX();
         oy = e.getY();
     }
@@ -457,78 +447,42 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int dx = e.getX() - ox;
-        int dy = e.getY() - oy;
+        player.setDx(e.getX() - ox);
+        player.setDy(e.getY() - oy);
         ox = e.getX();
         oy = e.getY();
-
-        zenit -= dy;
-        if (zenit > 90) zenit = 90;
-        if (zenit <= -90) zenit = -90;
-        azimut -= dx;
-        azimut = azimut % 360;
-        a_rad = -1 * azimut * Math.PI / 180;
-        double z_rad = zenit * Math.PI / 180;
-        ex = Math.sin(a_rad) * Math.cos(z_rad);
-        ey = Math.sin(z_rad);
-        ez = -Math.cos(a_rad) * Math.cos(z_rad);
-        ux = Math.sin(a_rad) * Math.cos(z_rad + Math.PI / 2);
-        uy = Math.sin(z_rad + Math.PI / 2);
-        uz = -Math.cos(a_rad) * Math.cos(z_rad + Math.PI / 2);
-
-//        System.out.println("azimut = " + azimut);
-        if (azimut >= -90 / 2.0 && azimut <= 90 / 2.0) {
-            compass = "N";
-        }
-        if (azimut >= 90 - 90 / 2.0 && azimut <= 90 + 90 / 2.0) {
-            compass = "E";
-        }
-        if (azimut >= 180 - 90 / 2.0 && azimut <= 180 + 90 / 2.0) {
-            compass = "S";
-        }
-        if (azimut >= 270 - 90 / 2.0 && azimut <= 270 + 90 / 2.0) {
-            compass = "W";
-        }
+        player.calculate();
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_W) {
             if (free) {
-                player.getPos().add(new Point3D(ex * trans, ey * trans, ez * trans));
+                player.moveForwardF();
             } else {
-                double kpx = player.getPX() + ex * trans;
-                double kpz = player.getPZ() + ez * trans;
-                curMaze.detectColision(kpx, kpz);
+                curMaze.detectCollision(player.moveForwardC());
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
             if (free) {
-                player.getPos().sub(new Point3D(ex * trans, ey * trans, ez * trans));
+                player.moveBackF();
+
             } else {
-                double kpx = player.getPX() - ex * trans;
-                double kpz = player.getPZ() - ez * trans;
-                curMaze.detectColision(kpx, kpz);
+                curMaze.detectCollision(player.moveBackC());
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_A) {
             if (free) {
-                player.getPos().addX(Math.sin(a_rad - Math.PI / 2) * trans);
-                player.getPos().subZ(Math.cos(a_rad - Math.PI / 2) * trans);
+                player.moveLeftF();
             } else {
-                double kpx = player.getPos().getX() + Math.sin(a_rad - Math.PI / 2) * trans;
-                double kpz = player.getPos().getZ() - Math.cos(a_rad - Math.PI / 2) * trans;
-                curMaze.detectColision(kpx, kpz);
+                curMaze.detectCollision(player.moveLeftC());
             }
         }
         if (e.getKeyCode() == KeyEvent.VK_D) {
             if (free) {
-                player.getPos().subX(Math.sin(a_rad - Math.PI / 2) * trans);
-                player.getPos().addZ(Math.cos(a_rad - Math.PI / 2) * trans);
+                player.moveRightF();
             } else {
-                double kpx = player.getPos().getX() - Math.sin(a_rad - Math.PI / 2) * trans;
-                double kpz = player.getPos().getZ() + Math.cos(a_rad - Math.PI / 2) * trans;
-                curMaze.detectColision(kpx, kpz);
+                curMaze.detectCollision(player.moveRightC());
             }
         }
 

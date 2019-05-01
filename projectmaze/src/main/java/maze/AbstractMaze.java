@@ -2,6 +2,8 @@ package maze;
 
 import blocks.AbstractBlock;
 import blocks.Teleporter;
+import player.Player;
+import transforms.Point2D;
 import transforms.Point3D;
 
 import java.io.Serializable;
@@ -19,7 +21,9 @@ public class AbstractMaze implements Serializable {
     private List<String> textureUls = new ArrayList<>();
     private Player player = new Player();
 
-    public void detectColision(double x, double z) {
+    public void detectCollision(Point2D p) {
+        double x = p.getX();
+        double z = p.getY();
         double posX = x / squareSize;
         double posZ = z / squareSize;
         double curPosX = player.getPos().getX() / squareSize;
