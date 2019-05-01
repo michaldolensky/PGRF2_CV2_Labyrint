@@ -42,7 +42,6 @@ public class Player {
 
     public String getDirection() {
         int az = (int) azimut;
-        System.out.println("az = " + az);
         if (az > 0) {
             if (az >= 315 && az < 360 || az <= 45) {
                 return "N";
@@ -57,7 +56,7 @@ public class Player {
                 return "E";
             }
         } else {
-            az = Math.abs((int) azimut);
+            az = Math.abs(az);
             if (az >= 315 && az < 360 || az <= 45) {
                 return "N";
             }
