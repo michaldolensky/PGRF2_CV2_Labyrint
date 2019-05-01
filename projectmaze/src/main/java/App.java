@@ -87,7 +87,7 @@ public class App {
 
 		menuBar.add(menu1);
 		frame.setMenuBar(menuBar);
-		start(defaultMaze);
+        start(App.defaultMaze);
 	}
 
 }
