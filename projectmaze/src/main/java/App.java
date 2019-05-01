@@ -14,7 +14,8 @@ public class App {
 	public void start(){
 		try {
 			Frame frame = new Frame();
-			frame.setSize(512, 384);
+            frame.setSize(1000, 750);
+            frame.setLocationRelativeTo(null);
 
 
 			// setup OpenGL Version 2
@@ -36,7 +37,7 @@ public class App {
 			canvas.addMouseListener(ren);
 			canvas.addMouseMotionListener(ren);
 			canvas.addKeyListener(ren);
-	    	canvas.setSize( 512, 384 );
+            canvas.setSize(1000, 750);
 	    	
 	    	
 	    	frame.add(canvas);

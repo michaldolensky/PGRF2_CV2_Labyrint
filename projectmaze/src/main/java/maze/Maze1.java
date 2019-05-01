@@ -45,21 +45,22 @@ public class Maze1 extends AbstractMaze {
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall()},
-                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Hall()},
+                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Wall(), new Wall(), new Wall(), new Wall()},
-                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall()},
+                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
         };
         getLevels().add(level2);
         getPlayer().setCurrentLevel(0);
         //floor
-        getTextureUls().add("textures/block/black_wool.png");//0
+        getTextureUls().add("textures/block/anvil.png");//0
         getTextureUls().add("textures/block/acacia_planks.png");//1
         getTextureUls().add("textures/block/bricks.png");//2
-        getTextureUls().add("textures/block/cobblestone.png");//3
+        getTextureUls().add("textures/block/piston_side.png");//3
         getTextureUls().add("textures/block/concrete_powder/blue_concrete_powder.png");//4
         getTextureUls().add("textures/block/water_still.png");//5
         getTextureUls().add("textures/block/clay.png");//6
         getTextureUls().add("textures/block/piston_inner.png");//7
+        getTextureUls().add("textures/block/crafting_table_top.png");//8
     }
 
 }
