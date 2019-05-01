@@ -8,12 +8,10 @@ import maze.Maze1;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class App implements ActionListener {
+public class App {
 	private static final int FPS = 120; // animator's target frames per second
 	private static final AbstractMaze defaultMaze = new Maze1();
 	private Frame frame;
@@ -67,7 +65,11 @@ public class App implements ActionListener {
 	}
 
 
-	private void initWindow(AbstractMaze defaultMaze){
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new App().initWindow());
+    }
+
+    private void initWindow() {
 		frame = new Frame();
 		frame.setSize(1000, 750);
 		frame.setLocationRelativeTo(null);
@@ -76,30 +78,16 @@ public class App implements ActionListener {
 		Menu menu1 = new Menu("Maze selection");
 
 		MenuItem mItem1 = new MenuItem("Maze 1");
+        mItem1.addActionListener(e -> start(new Maze1()));
 		menu1.add(mItem1);
-		mItem1.setActionCommand("Maze1");
-		mItem1.addActionListener(this);
 
 		MenuItem mItem2 = new MenuItem("Test maze");
+        mItem2.addActionListener(e -> start(new CollisionTestMaze()));
 		menu1.add(mItem2);
-		mItem2.setActionCommand("testMaze");
-		mItem2.addActionListener(this);
 
-		menu1.add(mItem2);
 		menuBar.add(menu1);
 		frame.setMenuBar(menuBar);
 		start(defaultMaze);
 	}
 
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new App().initWindow(defaultMaze));
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("Maze1")) start(new Maze1());
-		if(e.getActionCommand().equals("testMaze")) start(new CollisionTestMaze());
-
-	}
 }
