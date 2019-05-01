@@ -5,6 +5,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 import maze.AbstractMaze;
 import maze.CollisionTestMaze;
 import maze.Maze1;
+import maze.TeleportMaze;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,6 +85,10 @@ public class App {
 		MenuItem mItem2 = new MenuItem("Test maze");
         mItem2.addActionListener(e -> start(new CollisionTestMaze()));
 		menu1.add(mItem2);
+
+        MenuItem mItem3 = new MenuItem("Teleport Maze");
+        mItem3.addActionListener(e -> start(new TeleportMaze()));
+        menu1.add(mItem3);
 
 		menuBar.add(menu1);
 		frame.setMenuBar(menuBar);

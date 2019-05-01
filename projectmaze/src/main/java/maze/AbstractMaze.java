@@ -8,6 +8,7 @@ import transforms.Point3D;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AbstractMaze implements Serializable {
@@ -18,8 +19,30 @@ public class AbstractMaze implements Serializable {
     private int heightBetweenLevels = 100;
     private Point3D startPosition;
     private final List<AbstractBlock[][]> levels = new ArrayList<>();
-    private final List<String> textureUls = new ArrayList<>();
+    private final HashMap<Integer, String> textureUls = new HashMap<>();
     private Player player = new Player();
+
+    public AbstractMaze() {
+        //Finish
+        getTextureUls().put(98, "textures/block/lime_shulker_box.png");
+        getTextureUls().put(99, "textures/block/lime_shulker_box_side.png");
+
+        //Default Hall Texture
+        getTextureUls().put(101, "textures/block/cracked_stone_bricks.png");//texN
+        getTextureUls().put(102, "textures/block/cracked_stone_bricks.png");//texE
+        getTextureUls().put(103, "textures/block/cracked_stone_bricks.png");//texS
+        getTextureUls().put(104, "textures/block/cracked_stone_bricks.png");//texW
+        getTextureUls().put(105, "textures/block/light_blue_stained_glass.png");//texU
+        getTextureUls().put(106, "textures/block/brown_terracotta.png");//texD
+
+        //Teleport
+        getTextureUls().put(111, "textures/block/piston_bottom.png");//texN
+        getTextureUls().put(112, "textures/block/piston_bottom.png");//texE
+        getTextureUls().put(113, "textures/block/piston_bottom.png");//texS
+        getTextureUls().put(114, "textures/block/piston_bottom.png");//texW
+        getTextureUls().put(115, "textures/block/piston_top.png");//texU
+        getTextureUls().put(116, "textures/block/piston_inner.png");//texD
+    }
 
     public void detectCollision(Point2D p) {
         double x = p.getX();
@@ -72,11 +95,11 @@ public class AbstractMaze implements Serializable {
     }
 
     private void movePlayer(Point3D pos) {
-        player.setCurrentLevel((int)pos.getY());
+        player.setCurrentLevel((int) pos.getY());
         player.setPos(calcPos(pos));
     }
 
-    Point3D calcPos(Point3D pos) {
+    protected Point3D calcPos(Point3D pos) {
         double px = squareSize * pos.getX() + PLAYER_OFFSET.getX() * squareSize;
         double py = (int) pos.getY() * heightBetweenLevels + PLAYER_OFFSET.getY() * squareSize;
         double pz = squareSize * pos.getZ() + PLAYER_OFFSET.getZ() * squareSize;
@@ -101,16 +124,16 @@ public class AbstractMaze implements Serializable {
         return startPosition.addOffset(offset).mul(squareSize);
     }
 
-    public List<String> getTextureUls() {
+    public HashMap<Integer, String> getTextureUls() {
         return textureUls;
     }
 
 
-    Point3D getStartPosition() {
+    protected Point3D getStartPosition() {
         return startPosition;
     }
 
-    void setStartPosition(Point3D startPosition) {
+    protected void setStartPosition(Point3D startPosition) {
         this.startPosition = startPosition;
     }
 

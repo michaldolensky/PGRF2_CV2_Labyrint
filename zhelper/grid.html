@@ -1,222 +1,130 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
-  <meta charset="UTF-8">
-  <script type="text/javascript" ></script>
+    <title></title>
+    <meta charset="UTF-8">
+    <script type="text/javascript"></script>
+    <style type="text/css">
+        body {
+            background-color: lightgray;
+        }
+
+        #bludiste {
+            position: absolute;
+            top: 300px;
+            height: 150px;
+        }
+
+        .noselect {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Chrome/Safari/Opera */
+            -khtml-user-select: none; /* Konqueror */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+        }
+    </style>
 </head>
-<style type="text/css">
-  body{
-    background-color: lightgray;
-  }
-  #bludiste{
-    position: absolute;
-    top: 200px;
-    height: 150px;
-  }
-
-  .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
-  -moz-user-select: none;      /* Firefox */
-  -ms-user-select: none;       /* Internet Explorer/Edge */
-}
-</style>
-
-<script type="text/javascript">
-
-var newArr = [];
-
-
-var velikostObrazku = 25;
-var odsazeni = 0;
-var newmapa = [];
-var mapa = [];
-
-var sirka; 
-var vyska;
-  
-function Generovat(){
-
-if(sir.value >0 && vys.value>0){
-
-
-si.value = sir.value;
-vy.value = sir.value;
-
-sirka = sir.value;
-vyska = vys.value;
-new_apa.value = "";
-bludiste.innerHTML = '';
-mapa = [];
-newmapa = [];
-
-
-//document.getElementById("bludiste").innerHTML="";
-for(var i = 0; i <sirka*vyska;i++){
-  mapa.push(1);
-}
-
-//console.log(mapa);
-
-
-while(mapa.length) newmapa.push(mapa.splice(0,sirka));
-
-//console.log(newmapa);
-
-for (var y = 0; y < sirka; y++)
-{
-    for (var x = 0; x < vyska; x++)
-    {
-      var barv;
-      switch (newmapa[x][y]){
-          case -1: barv = 'white;border: solid 1px black';
-                  break;
-          case 0: barv = 'white;border: solid 1px black';
-                  break;
-          case 1: barv = 'black;border: solid 1px black';
-                  break;
-          case 3: barv = 'lime;border: solid 1px black';
-      }
-
-      document.getElementById("bludiste").innerHTML+='<div class="pole" style="top:'+(x*velikostObrazku)+'px; left:'+(y*velikostObrazku)+'px; height:'+velikostObrazku+'px; width:'+velikostObrazku+'px;position: absolute; background-color: '+barv+'"  ></div>';
-    }
-}
-var pole = document.getElementsByClassName("pole");
-        for ( var i = 0; i < pole.length; i++ ) (function(i){
-  pole[i].onmousemove = function(e) {
-      if(e.buttons == 1 && document.querySelector('input[name="barva"]:checked').value !="start"){
-
-        var hodnota;
-        var bar;
-
-
-        switch (document.querySelector('input[name="barva"]:checked').value){
-          case "zed": bar = 'black';
-                      hodnota = 1;
-                      break;
-          case "cesta": bar = 'white';
-                        hodnota = 0;
-                        break;
-          case "cil": bar = 'lime';
-                        hodnota = 3;
-                        break;
-        }
-
-        //******
-          pole[i].style.backgroundColor = bar;
-          var cisloRadku =parseInt(pole[i].style.top,10)
-          var cisloSloupce =parseInt(pole[i].style.left,10)
-          cisloRadku/=(velikostObrazku+odsazeni);
-          cisloSloupce/=(velikostObrazku+odsazeni);
-          cisloRadku+=1;
-          cisloSloupce+=1;
-
-          newmapa[cisloRadku-1][cisloSloupce-1] = hodnota;
-		  console.log(newmapa)
-          new_apa.value = "";
-          newArr = []; 
-
-          onedim();
-        //****
-        }
-  }})(i);
-
-for ( var i = 0; i < pole.length; i++ ) (function(i){
-  pole[i].onclick = function(e) {
-        var hodnota;
-        var bar;
-        if(document.querySelector('input[name="barva"]:checked').value =="start"){ 
-          var cisloRadku =parseInt(pole[i].style.top,10)
-          var cisloSloupce =parseInt(pole[i].style.left,10)
-          cisloRadku/=(velikostObrazku+odsazeni);
-          cisloSloupce/=(velikostObrazku+odsazeni);
-          st_x.value = cisloSloupce;
-          st_y.value = cisloRadku;
-
-}
-  }})(i);
-
-}
-else alert("Zadávejte čísla, která nejsou menší jak nula");
-}
-
-function checkKey(e) {
-    e = e || window.event;
-    alert(e.keyCode);
-}
-
-function onedim(){
-
-for(var i = 0; i < newmapa.length; i++)
-{
-  newArr = newArr.concat(newmapa[i]);
-}
- new_apa.value = newArr.toString();
- struktura.value = new_apa.value;
- //if(mapa.toString == newArr.toString ) alert("Done");
-}
-
-
-    function odeslat()
-{
-
-  test1.value="";
-    if(jmen_mapy.value != "" && vy.value!= "" && si.value!=""&& st_x.value!= ""&& st_y.value != "" && struktura.value != ""){
-    var elements = document.getElementsByClassName("odeslani");
-    var formData = new FormData(); 
-    formData.append("druh", "OdeslatMapu");
-    for(var i=0; i<elements.length; i++)
-    {
-        formData.append(elements[i].name, elements[i].value);
-    }
-    var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function()
-        {
-            if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            {
-                alert(xmlHttp.responseText);
-            }
-        }
-    //    xmlHttp.open("post", "pri_od.`"); 
-        xmlHttp.send(formData); 
-}else alert("Prosím vyplňte vše potřebné");
-}
-
-
-
-</script>
 
 
 <body>
-  <input class='odeslani' id="jmen_mapy" type="text" required maxlength="25" name="jmeno_mapy" placeholder="jméno mapy">
-  <input class='odeslani'  type="text" disabled required id="vy" name="sirka" placeholder="sirka">
-  <input class='odeslani' type="text" disabled required id="si" name="vyska" placeholder="vyska">
-  <input class='odeslani' type="text" disabled required id="st_x" name="start_x" placeholder="start_x">
-  <input class='odeslani' type="text" disabled required id="st_y" name="start_y" placeholder="start_y">
-  <input class='odeslani' type="text" maxlength="20" disabled name="tvurce" value="<?php echo($_SESSION['jmeno'])?>">
-  <input class='odeslani' id="struktura" type="text" name="struktura" placeholder="struktura"><br>
-    <textarea disabled id="test1" value=""></textarea>
-
-
-<div class="noselect" id="bludiste"> </div>
+<div class="noselect" id="bludiste"></div>
 
 <div class="noselect" style="position: relative; margin-left: 0px; width: 100%; height: 100px; z-index: 1">
-<textarea class="noselect" style=" float: left;width: 35px; height: 100%; " id="new_apa"></textarea>
-  <li><input type="radio" class="radio noselect" name="barva" checked value="cesta" />cesta(white)</li>
-  <li><input type="radio" class="radio noselect" name="barva" value="zed" />zed(black)</li>
-  <li><input type="radio" class="radio noselect" name="barva" value="cil" />cil</li>
-  <li><input type="radio" class="radio noselect" name="barva" value="start" />start</li>
+    <textarea class="noselect" id="new_apa" style=" float: left;width: 325px; height: 300px; "></textarea>
+    <br>
+    <input id="level" value="1">
+    <div id="inputs">
 
-  <input type="number" id="sir" value="10">
-  <input type="number" id="vys" value="10">
-  <button class="noselect" onclick="Generovat()">Generovat</button>
-  <input type="submit" value="Odeslat" onclick="odeslat(); return false;">
-  <button onclick="location.href='urovne.php'"><i class="fa fa-plus fa-2x" aria-hidden="true">Zpět do menu</i>
-</button>
+    </div>
+
+    <input id="sir" type="number" value="10">
+    <input id="vys" type="number" value="10">
+    <button class="noselect" onclick="Generovat()">Generovat</button>
 </div>
 
 </body>
+<script type="text/javascript">
+    var velikostObrazku = 25;
+    var odsazeni = 0;
+    var newmapa = [];
+    var mapa = [];
+
+    var sirka;
+    var vyska;
+
+    const m = new Map([
+        ['new Wall()', 'black'],
+        ['Hall0', 'white'],
+        ['Teleport', 'cyan'],
+        ['Hall1', 'yellow'],
+        ['Hall2', 'magenta'],
+        ['Hall3', 'black'],
+        ['new Finish()', 'gold'],
+    ]);
+    for (let [name, value] of m) {
+        var el = document.createElement("input");
+        el.type = "radio";
+        el.className = "noselect";
+        el.value = name;
+        el.name = "barva";
+        document.getElementById("inputs").appendChild(el);
+        document.getElementById("inputs").append(name);
+
+    }
+
+
+    function Generovat() {
+        if (sir.value > 0 && vys.value > 0) {
+            sirka = sir.value;
+            vyska = vys.value;
+            new_apa.value = "";
+            bludiste.innerHTML = '';
+            mapa = [];
+            newmapa = [];
+
+
+            for (var i = 0; i < sirka * vyska; i++) {
+                mapa.push("new Wall()");
+            }
+
+            while (mapa.length) newmapa.push(mapa.splice(0, sirka));
+            for (var y = 0; y < sirka; y++) {
+                for (var x = 0; x < vyska; x++) {
+                    document.getElementById("bludiste").innerHTML += '<div class="pole" style="top:' + (x * velikostObrazku) + 'px; left:' + (y * velikostObrazku) + 'px; height:' + velikostObrazku + 'px; width:' + velikostObrazku + 'px;position: absolute; background-color: ' + m.get(newmapa[x][y]) + '"  ></div>';
+                }
+            }
+            var pole = document.getElementsByClassName("pole");
+            for (var i = 0; i < pole.length; i++) (function (i) {
+                pole[i].onmousemove = function (e) {
+                    if (e.buttons == 1) {
+                        pole[i].style.backgroundColor = m.get(document.querySelector('input[name="barva"]:checked').value);
+                        var cisloRadku = parseInt(pole[i].style.top, 10);
+                        var cisloSloupce = parseInt(pole[i].style.left, 10);
+                        cisloRadku /= (velikostObrazku + odsazeni);
+                        cisloSloupce /= (velikostObrazku + odsazeni);
+                        cisloRadku += 1;
+                        cisloSloupce += 1;
+
+                        if (document.querySelector('input[name="barva"]:checked').value === "Teleport") {
+                            newmapa[cisloRadku - 1][cisloSloupce - 1] = `new Teleport(${cisloRadku - 1},${level.value},${cisloSloupce - 1})`;
+                        } else {
+                            newmapa[cisloRadku - 1][cisloSloupce - 1] = document.querySelector('input[name="barva"]:checked').value;
+                        }
+
+                        new_apa.value = "";
+                        for (var y = 0; y < vyska; y++) {
+                            new_apa.value += "{";
+                            for (var x = 0; x < sirka; x++) {
+                                new_apa.value += newmapa[y][x] + ",";
+                            }
+                            new_apa.value = new_apa.value.slice(0, -1);
+                            new_apa.value += "},\n";
+                        }
+                    }
+                }
+            })(i);
+        } else alert("Zadávejte čísla, která nejsou menší jak nula");
+    }
+</script>
+
 </html>

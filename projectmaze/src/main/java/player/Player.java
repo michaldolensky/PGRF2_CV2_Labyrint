@@ -17,7 +17,6 @@ public class Player {
 
     public void look(GLU glu) {
         glu.gluLookAt(getPX(), getPY(), getPZ(), ex + getPX(), ey + getPY(), ez + getPZ(), ux, uy, uz);
-
     }
 
     public String getLookString() {

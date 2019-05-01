@@ -20,8 +20,7 @@ import java.awt.event.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Objects;
 
 class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
@@ -39,7 +38,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
     private boolean per = true, free = false;
     private long oldmils = System.currentTimeMillis();
 
-    private List<Texture> texture;
+    private HashMap<Integer, Texture> texture;
     private final AbstractMaze curMaze;
     private final Player player;
 
@@ -81,29 +80,28 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc=" Texture loading ">
-        texture = new ArrayList<>();
+        texture = new HashMap<>();
 
         //Load textures
-        try {
-            System.err.println("Loading textures...");
 
-            int index = 0;
-            for (String textureUl : curMaze.getTextureUls()) {
-                texture.add(TextureIO.newTexture(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(textureUl)), false, TextureIO.PNG));
-                System.out.println(textureUl + " estimated memory size = " + texture.get(index).getEstimatedMemorySize());
-                index++;
+        System.err.println("Loading textures...");
+        curMaze.getTextureUls().forEach((k, v) -> {
+            try {
+                texture.put(k, TextureIO.newTexture(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(v)), false, TextureIO.PNG));
+            } catch (IOException e) {
+                e.printStackTrace();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                e.printStackTrace(new PrintStream(bos));
+                JOptionPane.showMessageDialog(null,
+                        bos.toString(),
+                        "Error loading texture",
+                        JOptionPane.ERROR_MESSAGE);
+                throw new GLException(e);
+                //return;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            e.printStackTrace(new PrintStream(bos));
-            JOptionPane.showMessageDialog(null,
-                    bos.toString(),
-                    "Error loading texture",
-                    JOptionPane.ERROR_MESSAGE);
-            throw new GLException(e);
-            //return;
-        }
+            System.out.println(v + " estimated memory size = " + texture.get(k).getEstimatedMemorySize());
+        });
+
 
 // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc=" Set Default Parameters ">
@@ -139,8 +137,8 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 //        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, light_spec, 0);
 
         //fixme
-//        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
-        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
+//        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
 //        gl.glEnable(GL2.GL_LIGHTING);
 //        gl.glEnable(GL2.GL_LIGHT0);
@@ -184,14 +182,14 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                         if (texture.get(b.getTexD()) != null) {
                             texture.get(b.getTexD()).enable(gl);
                             texture.get(b.getTexD()).bind(gl);
-                            DS.drawFloor(gl, ZS0, XS0, y, ZSS, XSS);
+                            DS.drawFloor(gl, ZS0, XS0, y, ZSS, XSS, b.getTexRepXY());
                             texture.get(b.getTexU()).disable(gl);
                         }
                         //Up
                         if (texture.get(b.getTexU()) != null) {
                             texture.get(b.getTexU()).enable(gl);
                             texture.get(b.getTexU()).bind(gl);
-                            DS.drawCeiling(gl, ZS0, XS0, YPS, ZSS, XSS);
+                            DS.drawCeiling(gl, ZS0, XS0, YPS, ZSS, XSS, b.getTexRepXY());
                             texture.get(b.getTexU()).disable(gl);
                         }
                         //north - cyan - wood
@@ -203,11 +201,11 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(0.0f, 1.0f, 1.0f);
-                                gl.glTexCoord2f(4, 0);
+                                gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZSS, y, XS0);
-                                gl.glTexCoord2f(4, 4);
+                                gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
                                 gl.glVertex3i(ZSS, YPS, XS0);
-                                gl.glTexCoord2f(0, 4);
+                                gl.glTexCoord2f(0, b.getTexRepXY());
                                 gl.glVertex3i(ZS0, YPS, XS0);
                                 gl.glTexCoord2f(0, 0);
                                 gl.glVertex3i(ZS0, y, XS0);
@@ -224,13 +222,13 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(1.0f, 0.0f, 1.0f);
-                                gl.glTexCoord2f(2, 2);
+                                gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
                                 gl.glVertex3i(ZSS, YPS, XSS);
-                                gl.glTexCoord2f(2, 0);
+                                gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZSS, y, XSS);
                                 gl.glTexCoord2f(0, 0);
                                 gl.glVertex3i(ZS0, y, XSS);
-                                gl.glTexCoord2f(0, 2);
+                                gl.glTexCoord2f(0, b.getTexRepXY());
                                 gl.glVertex3i(ZS0, YPS, XSS);
                                 gl.glEnd();
                                 texture.get(b.getTexS()).disable(gl);
@@ -246,11 +244,11 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(0.0f, 1.0f, 0.0f);
-                                gl.glTexCoord2f(1, 0);
+                                gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZSS, y, XSS);
-                                gl.glTexCoord2f(1, 1);
+                                gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
                                 gl.glVertex3i(ZSS, YPS, XSS);
-                                gl.glTexCoord2f(0, 1);
+                                gl.glTexCoord2f(0, b.getTexRepXY());
                                 gl.glVertex3i(ZSS, YPS, XS0);
                                 gl.glTexCoord2f(0, 0);
                                 gl.glVertex3i(ZSS, y, XS0);
@@ -267,11 +265,11 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(1.0f, 1.0f, 0.0f);
-                                gl.glTexCoord2f(1, 0);
+                                gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZS0, YPS, XSS);
-                                gl.glTexCoord2f(1, 1);
+                                gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
                                 gl.glVertex3i(ZS0, y, XSS);
-                                gl.glTexCoord2f(0, 1);
+                                gl.glTexCoord2f(0, b.getTexRepXY());
                                 gl.glVertex3i(ZS0, y, XS0);
                                 gl.glTexCoord2f(0, 0);
                                 gl.glVertex3i(ZS0, YPS, XS0);
@@ -336,24 +334,24 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         player.look(glu);
 
 
-        float[] light2_pos = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1};
-        float[] light2_color_am = {0, 0, 1, 1};
-        float[] light2_color_diff = {1, 0, 0, 0};
-        float[] light2_color_spec = {1, 1, 1, 1};
-        float[] light2_spot_dir = {(float) ex, (float) ey, (float) ez};
-//        float[] light2_spot_dir = {0,0,1 };
-
-        System.out.println("light2_pos = " + Arrays.toString(light2_pos));
-        System.out.println("light2_spot_dir = " + Arrays.toString(light2_spot_dir));
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_POSITION, light2_pos, 0);
-        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_AMBIENT, light2_color_am, 0);
-        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_color_diff, 0);
-        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_color_spec, 0);
-
-        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPOT_DIRECTION, light2_spot_dir, 0);
-        gl.glLightf(GL2.GL_LIGHT2, GL2.GL_SPOT_CUTOFF, 20);
-        gl.glEnable(GL2.GL_LIGHT2);
+//        float[] light2_pos = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1};
+//        float[] light2_color_am = {0, 0, 1, 1};
+//        float[] light2_color_diff = {1, 0, 0, 0};
+//        float[] light2_color_spec = {1, 1, 1, 1};
+//        float[] light2_spot_dir = {(float) ex, (float) ey, (float) ez};
+////        float[] light2_spot_dir = {0,0,1 };
+//
+//        System.out.println("light2_pos = " + Arrays.toString(light2_pos));
+//        System.out.println("light2_spot_dir = " + Arrays.toString(light2_spot_dir));
+//        gl.glEnable(GL2.GL_LIGHTING);
+//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_POSITION, light2_pos, 0);
+//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_AMBIENT, light2_color_am, 0);
+//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_color_diff, 0);
+//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_color_spec, 0);
+//
+//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPOT_DIRECTION, light2_spot_dir, 0);
+//        gl.glLightf(GL2.GL_LIGHT2, GL2.GL_SPOT_CUTOFF, 20);
+//        gl.glEnable(GL2.GL_LIGHT2);
 
 
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">

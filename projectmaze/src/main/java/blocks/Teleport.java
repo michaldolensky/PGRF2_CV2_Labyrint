@@ -7,8 +7,12 @@ public class Teleport extends Hall{
 
     public Teleport(int z, int y, int x) {
         this.teleportTo = new Point3D(x, y, z);
-        this.texD = 7;
-        this.texU = 7;
+        this.texN = 111;
+        this.texE = 112;
+        this.texS = 113;
+        this.texW = 114;
+        this.texU = 115;
+        this.texD = 116;
     }
 
     public Point3D getTeleportTo() {
