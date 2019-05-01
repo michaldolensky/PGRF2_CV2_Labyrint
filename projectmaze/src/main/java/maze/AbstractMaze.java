@@ -22,7 +22,7 @@ public class AbstractMaze implements Serializable {
     private final HashMap<Integer, String> textureUls = new HashMap<>();
     private Player player = new Player();
 
-    public AbstractMaze() {
+    AbstractMaze() {
         //Finish
         getTextureUls().put(98, "textures/block/lime_shulker_box.png");
         getTextureUls().put(99, "textures/block/lime_shulker_box_side.png");
@@ -99,7 +99,7 @@ public class AbstractMaze implements Serializable {
         player.setPos(calcPos(pos));
     }
 
-    protected Point3D calcPos(Point3D pos) {
+    Point3D calcPos(Point3D pos) {
         double px = squareSize * pos.getX() + PLAYER_OFFSET.getX() * squareSize;
         double py = (int) pos.getY() * heightBetweenLevels + PLAYER_OFFSET.getY() * squareSize;
         double pz = squareSize * pos.getZ() + PLAYER_OFFSET.getZ() * squareSize;
@@ -129,11 +129,11 @@ public class AbstractMaze implements Serializable {
     }
 
 
-    protected Point3D getStartPosition() {
+    Point3D getStartPosition() {
         return startPosition;
     }
 
-    protected void setStartPosition(Point3D startPosition) {
+    void setStartPosition(Point3D startPosition) {
         this.startPosition = startPosition;
     }
 

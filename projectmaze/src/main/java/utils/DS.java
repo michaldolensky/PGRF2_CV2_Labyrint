@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL2;
 
 public class DS {
 
+    @SuppressWarnings("Duplicates")
     public static void drawCeiling(GL2 gl, int ZS0, int XS0, int YPS, int ZSS, int XSS, int rep) {
         gl.glBegin(GL2.GL_QUADS);
         gl.glColor3f(0.0f, 0.0f, 1.0f);
@@ -18,6 +19,7 @@ public class DS {
         gl.glEnd();
     }
 
+    @SuppressWarnings("Duplicates")
     public static void drawFloor(GL2 gl, int ZS0, int XS0, int YPS, int ZSS, int XSS, int rep) {
         gl.glBegin(GL2.GL_QUADS);
         gl.glColor3f(0.0f, 0.0f, 1.0f);

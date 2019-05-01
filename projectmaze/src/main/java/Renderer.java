@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -34,10 +33,9 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
     private int height;
     private int ox, oy;
 
-
     private boolean per = true, free = false;
     private long oldmils = System.currentTimeMillis();
-    private long startTime;
+    private final long startTime;
 
 
     private HashMap<Integer, Texture> texture;
@@ -45,9 +43,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
     private final Player player;
 
     private int maze = 0;
-    //fixme:
-    private boolean fog = false;
-    private float[] light_position;
+    private boolean fog = true;
     private Long finishTime;
 
     public Renderer(AbstractMaze maze) {
@@ -73,18 +69,18 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc=" Light">
         //spotlight
-        float spot_ambient[] = {1f, 1f, 1f, 1.0f};
-        float spot_diffuse[] = {0.0f, 0.0f, 0.0f, 1.0f};
-        float spot_specular[] = {1f, 1f, 1f, 1.0f};
+        float[] spot_ambient = {1f, 1f, 1f, 1.0f};
+        float[] spot_diffuse = {0.0f, 0.0f, 0.0f, 1.0f};
+        float[] spot_specular = {1f, 1f, 1f, 1.0f};
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, spot_ambient, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, spot_diffuse, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spot_specular, 0);
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
 
-        float fix_ambient[] = {0.01f, 0.01f, 0.01f, 1f};
-        float fix_diffuse[] = {0.01f, 0.01f, 0.01f, 1f};
-        float fix_specula[] = {0.01f, 0.01f, 0.01f, 1f};
+        float[] fix_ambient = {0.01f, 0.01f, 0.01f, 1f};
+        float[] fix_diffuse = {0.01f, 0.01f, 0.01f, 1f};
+        float[] fix_specula = {0.01f, 0.01f, 0.01f, 1f};
         gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, fix_ambient, 0);
         gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, fix_diffuse, 0);
         gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, fix_specula, 0);
@@ -334,8 +330,8 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         player.look(glu);
 
 
-        float spot_position[] = {(float) player.getPX(), (float)player.getPY(), (float)player.getPZ(), 1.0f};
-        float spot_direction[] = {(float)player.getEx(), (float)player.getEy(),(float) player.getEz()};
+        float[] spot_position = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1.0f};
+        float[] spot_direction = {(float) player.getEx(), (float) player.getEy(), (float) player.getEz()};
         float spot_angle = 35f;
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, spot_position, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPOT_DIRECTION, spot_direction, 0);
