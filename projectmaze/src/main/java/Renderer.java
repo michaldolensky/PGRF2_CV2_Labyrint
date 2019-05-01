@@ -50,7 +50,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private Player player;
     private String compass = "";
 
-    private int maze = 0, debPlayerPos = 0, debPlayerStartPos = 0;
+    private int maze = 0, debPlayerPos = 0;
     //fixme:
     private boolean fog = false;
     private float[] light_position;
@@ -375,13 +375,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">
-        gl.glPushMatrix();
-        Point3D sP = curMaze.calcPos(curMaze.getStartPosition());
-        gl.glColor3f(1, 0, 1);
-        gl.glTranslated(sP.getX(), sP.getY(), sP.getZ());
-        glut.glutWireCube(5);
-        gl.glPopMatrix();
-
         //player pos
         gl.glPushMatrix();
         gl.glColor3f(1, 0, 0);
@@ -389,6 +382,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         glut.glutSolidCube(1);
         gl.glPopMatrix();
         // </editor-fold>
+
 
         gl.glPushMatrix();
         gl.glCallList(maze);
