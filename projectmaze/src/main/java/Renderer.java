@@ -11,7 +11,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import maze.AbstractMaze;
-import maze.Maze1;
 import maze.Player;
 import transforms.Point3D;
 import utils.DS;
@@ -56,6 +55,12 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private float[] light_position;
     private int lx = 0, ly = 0;
 
+    public Renderer(AbstractMaze maze) {
+        curMaze = maze;
+        curMaze.resetPlayer();
+        player = curMaze.getPlayer();
+    }
+
 
     @Override
     //fixme remove
@@ -84,9 +89,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         float[] blue = {0.2f, 0.2f, 1.0f, 0.7f};
         float[] brown = {0.8f, 0.4f, 0.1f, 0.7f};
 // </editor-fold>
-        curMaze = new Maze1();
-        curMaze.resetPlayer();
-        player = curMaze.getPlayer();
 
         // <editor-fold defaultstate="collapsed" desc=" Texture loading ">
         texture = new ArrayList<>();

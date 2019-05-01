@@ -31,7 +31,7 @@ public class App {
 	    	GLCanvas canvas = new GLCanvas(capabilities);
 			final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
 
-			Renderer ren = new Renderer();
+			Renderer ren = new Renderer(new Maze1());
 //			Renderer ren = new Renderer(animator);
 			canvas.addGLEventListener(ren);
 			canvas.addMouseListener(ren);
