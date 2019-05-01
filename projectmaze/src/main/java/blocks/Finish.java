@@ -12,7 +12,4 @@ public class Finish extends Hall {
         this.texS = 99;
     }
 
-    public Finish(int texN, int texE, int texS, int texW, int texU, int texD) {
-        super(texN, texE, texS, texW, texU, texD);
-    }
 }

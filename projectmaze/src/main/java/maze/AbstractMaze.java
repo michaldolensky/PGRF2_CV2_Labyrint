@@ -15,12 +15,12 @@ public class AbstractMaze implements Serializable {
 
     private final static int COLLISION_SIZE = 5;
     public final static Point3D PLAYER_OFFSET = new Point3D(0.5, 0.5, 0.5);
-    private int squareSize = 40;
-    private int heightBetweenLevels = 100;
+    private final int squareSize = 40;
+    private final int heightBetweenLevels = 100;
     private Point3D startPosition;
     private final List<AbstractBlock[][]> levels = new ArrayList<>();
     private final HashMap<Integer, String> textureUls = new HashMap<>();
-    private Player player = new Player();
+    private final Player player = new Player();
 
     AbstractMaze() {
         //Finish
@@ -120,10 +120,6 @@ public class AbstractMaze implements Serializable {
     }
 
 
-    public Point3D getStartPosition(double offset) {
-        return startPosition.addOffset(offset).mul(squareSize);
-    }
-
     public HashMap<Integer, String> getTextureUls() {
         return textureUls;
     }
@@ -137,20 +133,8 @@ public class AbstractMaze implements Serializable {
         this.startPosition = startPosition;
     }
 
-    public void setSquareSize(int squareSize) {
-        this.squareSize = squareSize;
-    }
-
-    public void setHeightBetweenLevels(int heightBetweenLevels) {
-        this.heightBetweenLevels = heightBetweenLevels;
-    }
-
     public Player getPlayer() {
         return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public void checkForTeleport() {

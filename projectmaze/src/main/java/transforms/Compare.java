@@ -20,17 +20,5 @@ class Compare {
                 && (Math.abs(value1 - value2) <= epsilon * Math.abs(value2));
     }
 
-    /**
-     * Compares two double values for equivalence with the default maximum relative difference between them.
-     *
-     * @param value1 the first double to compare
-     * @param value2 the second double to compare
-     * @return {@code true} if the values are considered equal; {@code false}
-     * otherwise.
-     */
-    public static boolean eEquals(double value1, double value2) {
-        return eEquals(value1, value2, EPSILON);
-    }
-
 
 }

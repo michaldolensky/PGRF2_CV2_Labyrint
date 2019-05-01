@@ -235,10 +235,6 @@ public class Point3D {
     }
 
 
-    public Point3D addOffset(final double d) {
-        return new Point3D(x + d, y + d, z + d, w + d);
-    }
-
     public void sub(final Point3D p) {
         this.x -= p.getX();
         this.y -= p.getY();
@@ -257,16 +253,6 @@ public class Point3D {
 
     public void subZ(final double pz) {
         this.z -= pz;
-    }
-
-    /**
-     * Returns the result of element-wise multiplication by the given scalar value
-     *
-     * @param d scalar value of type double
-     * @return new Point3D instance
-     */
-    public Point3D mul(final double d) {
-        return new Point3D(x * d, y * d, z * d, w * d);
     }
 
     /**
