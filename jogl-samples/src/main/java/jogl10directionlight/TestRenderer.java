@@ -48,9 +48,9 @@ public class TestRenderer implements GLEventListener, MouseListener,
 		float[] mat_spec = new float[] {0.8f,0.0f,0.0f,1};// nastaveni materialu
 		float[] mat_amb = new float[] {0.1f,0.1f,0.1f,1};// nastaveni materialu
 //		float[] mat = new float[] {0.0f,0.1f,0.3f,1};// nastaveni materialu
-		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, mat_amb, 0); 
-		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_dif, 0); 
-		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_spec, 0); 
+		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, mat_amb, 0);
+		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, mat_dif, 0);
+		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_spec, 0);
 		//gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_EMISSION, mat, 0); 
 		
 		float[] light_amb = new float[] {1,1,1,1};// nastaveni ambientni slozky
@@ -95,6 +95,7 @@ public class TestRenderer implements GLEventListener, MouseListener,
 		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, light_position,0);
 		
 		float[] light_direction =  new float[] {-25,(lx)*scale,(ly)*scale,0.0f};
+
 		//float[] light_direction =  new float[] {-50,(lx-width/2)*scale-light_position[1],(height/2-ly)*scale-light_position[2],0.0f};
 		//float[] light_direction =  new float[] {-50,0f,0f,0.0f};
 		//System.out.println("pos: x"+light_position[0]+"y "+light_position[1]+"z "+light_position[2]);

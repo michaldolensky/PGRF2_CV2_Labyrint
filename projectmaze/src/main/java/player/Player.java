@@ -113,6 +113,19 @@ public class Player {
     public void setTrans(float trans) {
         this.trans = trans;
     }
+
+    public double getEx() {
+        return ex;
+    }
+
+    public double getEy() {
+        return ey;
+    }
+
+    public double getEz() {
+        return ez;
+    }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Player Movement ">

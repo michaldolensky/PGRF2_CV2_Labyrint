@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -70,16 +71,26 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         System.err.println("GL_RENDERER: " + gl.glGetString(GL2.GL_RENDERER));
         System.err.println("GL_VERSION: " + gl.glGetString(GL2.GL_VERSION));
 // </editor-fold>
-        // <editor-fold defaultstate="collapsed" desc=" Light and Colors setting ">
-        float[] mat_specular =
-                {1.0f, 1.0f, 1.0f, 1.0f};
-        float[] mat_shininess =
-                {50.0f};
-//        light_position = new float[]{1.0f, 1.0f, 1.0f, 0.0f};
+        // <editor-fold defaultstate="collapsed" desc=" Light">
+        //spotlight
+        float spot_ambient[] = {1f, 1f, 1f, 1.0f};
+        float spot_diffuse[] = {0.0f, 0.0f, 0.0f, 1.0f};
+        float spot_specular[] = {1f, 1f, 1f, 1.0f};
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, spot_ambient, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, spot_diffuse, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spot_specular, 0);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
 
+        float fix_ambient[] = {0.01f, 0.01f, 0.01f, 1f};
+        float fix_diffuse[] = {0.01f, 0.01f, 0.01f, 1f};
+        float fix_specula[] = {0.01f, 0.01f, 0.01f, 1f};
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, fix_ambient, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, fix_diffuse, 0);
+        gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, fix_specula, 0);
+        gl.glEnable(GL2.GL_LIGHT1);
 
-        float[] brown = {0.8f, 0.4f, 0.1f, 0.7f};
-// </editor-fold>
+        // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc=" Texture loading ">
         texture = new HashMap<>();
@@ -108,10 +119,10 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc=" Set Default Parameters ">
 
-        gl.glShadeModel(GL2.GL_SMOOTH);                // Enable Smooth Shading
-        gl.glClearDepth(1.0f);                        // Depth Buffer Setup
-        gl.glEnable(GL2.GL_DEPTH_TEST);                // Enables Depth Testing
-        gl.glDepthFunc(GL2.GL_LEQUAL);                // The Type Of Depth Testing To Do
+        gl.glShadeModel(GL2.GL_SMOOTH);
+        gl.glClearDepth(1.0f);
+        gl.glEnable(GL2.GL_DEPTH_TEST);
+        gl.glDepthFunc(GL2.GL_LEQUAL);
 
         // Really Nice Perspective Calculations
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
@@ -127,23 +138,8 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NONE);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NONE);
 
-//         Light and material
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, mat_specular, 0);
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, mat_shininess, 0);
+        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
 
-//        float[] light_amb = new float[]{1, 1, 1, 1};// nastaveni ambientni slozky
-//        float[] light_dif = new float[]{1, 1, 1, 1};// nastaveni difusni slozky
-//        float[] light_spec = new float[]{1, 1, 1, 1};// nastaveni zrcadlove slozky
-//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, light_amb, 0);
-//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, light_dif, 0);
-//        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, light_spec, 0);
-
-        //fixme
-        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_REPLACE);
-//        gl.glTexEnvi(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
-
-//        gl.glEnable(GL2.GL_LIGHTING);
-//        gl.glEnable(GL2.GL_LIGHT0);
         // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc="Static Objects Generation">
@@ -151,7 +147,6 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         if (0 >= maze) {
             maze = gl.glGenLists(1);
             gl.glNewList(maze, GL2.GL_COMPILE);
-            gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, brown, 0);
             maze(gl);
             gl.glEndList();
             System.err.println("maze list created: " + maze);
@@ -161,7 +156,6 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         // </editor-fold>
 
 
-        gl.glEnable(GL2.GL_NORMALIZE);
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Object Data generation ">
@@ -203,6 +197,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(0.0f, 1.0f, 1.0f);
+                                gl.glNormal3f(0.0f, 1.0f, 0.0f);
                                 gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZSS, y, XS0);
                                 gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
@@ -224,6 +219,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(1.0f, 0.0f, 1.0f);
+                                gl.glNormal3f(0.0f, 1.0f, 0.0f);
                                 gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
                                 gl.glVertex3i(ZSS, YPS, XSS);
                                 gl.glTexCoord2f(b.getTexRepXY(), 0);
@@ -246,6 +242,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(0.0f, 1.0f, 0.0f);
+                                gl.glNormal3f(0.0f, 1.0f, 0.0f);
                                 gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZSS, y, XSS);
                                 gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
@@ -267,6 +264,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
                                 gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(1.0f, 1.0f, 0.0f);
+                                gl.glNormal3f(0.0f, 1.0f, 0.0f);
                                 gl.glTexCoord2f(b.getTexRepXY(), 0);
                                 gl.glVertex3i(ZS0, YPS, XSS);
                                 gl.glTexCoord2f(b.getTexRepXY(), b.getTexRepXY());
@@ -336,25 +334,13 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         player.look(glu);
 
 
-//        float[] light2_pos = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1};
-//        float[] light2_color_am = {0, 0, 1, 1};
-//        float[] light2_color_diff = {1, 0, 0, 0};
-//        float[] light2_color_spec = {1, 1, 1, 1};
-//        float[] light2_spot_dir = {(float) ex, (float) ey, (float) ez};
-////        float[] light2_spot_dir = {0,0,1 };
-//
-//        System.out.println("light2_pos = " + Arrays.toString(light2_pos));
-//        System.out.println("light2_spot_dir = " + Arrays.toString(light2_spot_dir));
-//        gl.glEnable(GL2.GL_LIGHTING);
-//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_POSITION, light2_pos, 0);
-//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_AMBIENT, light2_color_am, 0);
-//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_DIFFUSE, light2_color_diff, 0);
-//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPECULAR, light2_color_spec, 0);
-//
-//        gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPOT_DIRECTION, light2_spot_dir, 0);
-//        gl.glLightf(GL2.GL_LIGHT2, GL2.GL_SPOT_CUTOFF, 20);
-//        gl.glEnable(GL2.GL_LIGHT2);
-
+        float spot_position[] = {(float) player.getPX(), (float)player.getPY(), (float)player.getPZ(), 1.0f};
+        float spot_direction[] = {(float)player.getEx(), (float)player.getEy(),(float) player.getEz()};
+        float spot_angle = 35f;
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, spot_position, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPOT_DIRECTION, spot_direction, 0);
+        gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, spot_angle);
+        gl.glLighti(GL2.GL_LIGHT0, GL2.GL_SPOT_EXPONENT, 15);
 
         // <editor-fold defaultstate="collapsed" desc=" Test Objects ">
         //player pos
