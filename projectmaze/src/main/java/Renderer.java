@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,7 +59,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     @Override
     //fixme remove
-    @SuppressWarnings("Duplicates")
     public void init(GLAutoDrawable glDrawable) {
         GL2 gl = glDrawable.getGL().getGL2();
         glu = new GLU();
@@ -156,10 +154,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //        gl.glEnable(GL2.GL_LIGHT0);
         // </editor-fold>
 
-        /* make the objects */
         // <editor-fold defaultstate="collapsed" desc="Static Objects Generation">
 
-        // <editor-fold defaultstate="collapsed" desc=" Maze ">
         if (0 >= maze) {
             maze = gl.glGenLists(1);
             gl.glNewList(maze, GL2.GL_COMPILE);
@@ -336,8 +332,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         oldmils = mils;
         trans = 300 * step;
 
-        //System.out.println(fps);
-
         // vymazani obrazovky a Z-bufferu
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
@@ -400,6 +394,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glCallList(maze);
         gl.glPopMatrix();
 
+
+        // <editor-fold defaultstate="collapsed" desc=" Fog ">
         if (fog) {
             //Fog
             float Fog_distance = 250;
@@ -417,7 +413,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         } else {
             gl.glDisable(GL2.GL_FOG);
         }
-
+        // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc=" Draw text ">
         gl.glColor3f(1f, 1f, 1f);
         String text = this.getClass().getName() + ": [WSAD][lmb] camera";
