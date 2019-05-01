@@ -18,7 +18,7 @@ public class App {
 	private GLCanvas canvas;
 	private FPSAnimator animator;
 
-	public void start(AbstractMaze maze){
+	private void start(AbstractMaze maze){
 		try {
 			// setup OpenGL Version 2
 	    	GLProfile profile = GLProfile.get(GLProfile.GL2);

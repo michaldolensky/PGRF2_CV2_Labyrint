@@ -13,6 +13,7 @@ import java.util.Optional;
  */
 
 
+@SuppressWarnings("ALL")
 public class Vec2D {
     private final double x, y;
 
@@ -174,7 +175,7 @@ public class Vec2D {
      *
      * @return double-precision floating point value
      */
-    public double length() {
+    private double length() {
         return Math.sqrt(x * x + y * y);
     }
 
@@ -187,7 +188,7 @@ public class Vec2D {
      */
     @Override
     public boolean equals(Object obj) {
-        return (this == obj) || (obj != null) && (obj instanceof Vec2D)
+        return (this == obj) || (obj instanceof Vec2D)
                 && (new Double(((Vec2D) obj).getX()).equals(getX()))
                 && (new Double(((Vec2D) obj).getY()).equals(getY()));
     }
@@ -211,7 +212,8 @@ public class Vec2D {
      * @return {@code true} if the objects are considered equal; {@code false}
      * otherwise.
      */
-    public boolean eEquals(Vec2D vec, double epsilon) {
+    @SuppressWarnings("SameParameterValue")
+    private boolean eEquals(Vec2D vec, double epsilon) {
         return (this == vec) || (vec != null)
                 && Compare.eEquals(getX(), vec.getX(), epsilon)
                 && Compare.eEquals(getY(), vec.getY(), epsilon);
@@ -238,14 +240,15 @@ public class Vec2D {
     }
 
     /**
-     * Returns String representation of this vector with coordinates formated
+     * Returns String representation of this vector with coordinates formatted
      * according to the given format, see
      * {@link java.lang.String#format(String, Object...)}
      *
      * @param format String format applied to each coordinate
      * @return comma separated floating-point values in brackets
      */
-    public String toString(String format) {
+    @SuppressWarnings("SameParameterValue")
+    private String toString(String format) {
         return String.format(Locale.US, "(" + format + "," + format + ")", x, y);
     }
 }

@@ -1,7 +1,7 @@
 package transforms;
 
-public class Compare {
-    protected static final double EPSILON = 1e-15;
+class Compare {
+    static final double EPSILON = 1e-15;
 
     /**
      * Compares two double values for equivalence with the maximum relative difference between them

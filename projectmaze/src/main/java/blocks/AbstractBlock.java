@@ -7,11 +7,11 @@ public class AbstractBlock{
     int texW;
     int texU;
     int texD;
-    boolean collision = false;
+    boolean walkable = true;
 
 
-    public boolean hasCollision() {
-        return collision;
+    public boolean isWalkable() {
+        return walkable;
     }
 
     public int getTexN() {

@@ -1,7 +1,7 @@
 package maze;
 
 import blocks.AbstractBlock;
-import blocks.Teleporter;
+import blocks.Teleport;
 import player.Player;
 import transforms.Point2D;
 import transforms.Point3D;
@@ -12,13 +12,13 @@ import java.util.List;
 
 public class AbstractMaze implements Serializable {
 
-    public final static int COLLISION_SIZE = 5;
+    private final static int COLLISION_SIZE = 5;
     public final static Point3D PLAYER_OFFSET = new Point3D(0.5, 0.5, 0.5);
     private int squareSize = 40;
     private int heightBetweenLevels = 100;
     private Point3D startPosition;
-    private List<AbstractBlock[][]> levels = new ArrayList<>();
-    private List<String> textureUls = new ArrayList<>();
+    private final List<AbstractBlock[][]> levels = new ArrayList<>();
+    private final List<String> textureUls = new ArrayList<>();
     private Player player = new Player();
 
     public void detectCollision(Point2D p) {
@@ -32,13 +32,13 @@ public class AbstractMaze implements Serializable {
         if (posZ - curPosZ > 0) {
             posZ = (z + COLLISION_SIZE) / squareSize;
         } else posZ = (z - COLLISION_SIZE) / squareSize;
-        if (!levels.get(player.getCurLev())[(int) posZ][(int) posX].hasCollision()) player.getPos().setZ(z);
+        if (levels.get(player.getCurLev())[(int) posZ][(int) posX].isWalkable()) player.getPos().setZ(z);
 
         posZ = z / squareSize;
         if (posX - curPosX > 0) {
             posX = (x + COLLISION_SIZE) / squareSize;
         } else posX = (x - COLLISION_SIZE) / squareSize;
-        if (!levels.get(player.getCurLev())[(int) posZ][(int) posX].hasCollision()) player.getPos().setX(x);
+        if (levels.get(player.getCurLev())[(int) posZ][(int) posX].isWalkable()) player.getPos().setX(x);
 
 
         System.out.println("-----");
@@ -71,12 +71,12 @@ public class AbstractMaze implements Serializable {
         player.setPos(calcPos(getStartPosition()));
     }
 
-    public void movePlayer(Point3D pos) {
+    private void movePlayer(Point3D pos) {
         player.setCurrentLevel((int)pos.getY());
         player.setPos(calcPos(pos));
     }
 
-    public Point3D calcPos(Point3D pos) {
+    Point3D calcPos(Point3D pos) {
         double px = squareSize * pos.getX() + PLAYER_OFFSET.getX() * squareSize;
         double py = (int) pos.getY() * heightBetweenLevels + PLAYER_OFFSET.getY() * squareSize;
         double pz = squareSize * pos.getZ() + PLAYER_OFFSET.getZ() * squareSize;
@@ -106,11 +106,11 @@ public class AbstractMaze implements Serializable {
     }
 
 
-    public Point3D getStartPosition() {
+    Point3D getStartPosition() {
         return startPosition;
     }
 
-    public void setStartPosition(Point3D startPosition) {
+    void setStartPosition(Point3D startPosition) {
         this.startPosition = startPosition;
     }
 
@@ -132,8 +132,8 @@ public class AbstractMaze implements Serializable {
 
     public void checkForTeleport() {
         if (getCurrentBlockAtPlayerLocation() != null) {
-            if ((getCurrentBlockAtPlayerLocation() instanceof Teleporter)) {
-                movePlayer(((Teleporter) getCurrentBlockAtPlayerLocation()).getTeleportTo());
+            if ((getCurrentBlockAtPlayerLocation() instanceof Teleport)) {
+                movePlayer(((Teleport) getCurrentBlockAtPlayerLocation()).getTeleportTo());
             }
         }
     }

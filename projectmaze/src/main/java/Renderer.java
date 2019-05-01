@@ -1,6 +1,6 @@
 import blocks.AbstractBlock;
 import blocks.Hall;
-import blocks.Teleporter;
+import blocks.Teleport;
 import blocks.Wall;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
+class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
 
     //static properties
 
@@ -36,19 +36,17 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private int ox, oy;
 
 
-    private float step;
     private boolean per = true, free = false;
     private long oldmils = System.currentTimeMillis();
 
     private List<Texture> texture;
-    private AbstractMaze curMaze;
-    private Player player;
+    private final AbstractMaze curMaze;
+    private final Player player;
 
-    private int maze = 0, debPlayerPos = 0;
+    private int maze = 0;
     //fixme:
     private boolean fog = false;
     private float[] light_position;
-    private int lx = 0, ly = 0;
 
     public Renderer(AbstractMaze maze) {
         curMaze = maze;
@@ -71,7 +69,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         System.err.println("GL_RENDERER: " + gl.glGetString(GL2.GL_RENDERER));
         System.err.println("GL_VERSION: " + gl.glGetString(GL2.GL_VERSION));
 // </editor-fold>
-        // <editor-fold defaultstate="collapsed" desc=" Light and Colors seting ">
+        // <editor-fold defaultstate="collapsed" desc=" Light and Colors setting ">
         float[] mat_specular =
                 {1.0f, 1.0f, 1.0f, 1.0f};
         float[] mat_shininess =
@@ -79,9 +77,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //        light_position = new float[]{1.0f, 1.0f, 1.0f, 0.0f};
 
 
-        float[] red = {0.8f, 0.1f, 0.0f, 0.7f};
-        float[] yellow = {0.8f, 0.75f, 0.0f, 0.7f};
-        float[] blue = {0.2f, 0.2f, 1.0f, 0.7f};
         float[] brown = {0.8f, 0.4f, 0.1f, 0.7f};
 // </editor-fold>
 
@@ -170,6 +165,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Object Data generation ">
+    @SuppressWarnings("Duplicates")
     private void maze(GL2 gl) {
         int y = 0;
         for (AbstractBlock[][] level : curMaze.getLevels()) {
@@ -310,13 +306,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         }
 
     }
-
-    private void debPlayerPos(GL2 gl) {
-
-    }
-
-    private void debPlayerStartPos(GL2 gl) {
-    }
 // </editor-fold>
 
 
@@ -325,7 +314,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         GL2 gl = glDrawable.getGL().getGL2();
 
         long mils = System.currentTimeMillis();
-        step = (mils - oldmils) / 1000.0f;
+        float step = (mils - oldmils) / 1000.0f;
         //float fps = 1000 / (float) (mils - oldmils);
         oldmils = mils;
         player.setTrans(300 * step);
@@ -415,7 +404,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 
         if (curMaze.getCurrentBlockAtPlayerLocation() != null) {
-            if (curMaze.getCurrentBlockAtPlayerLocation() instanceof Teleporter) {
+            if (curMaze.getCurrentBlockAtPlayerLocation() instanceof Teleport) {
                 OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
             }
         }
@@ -496,7 +485,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 free = !free;
                 //Returns player to playing height
                 if (!free)
-                    player.getPos().setY(curMaze.getPlayer().getCurLev() * curMaze.getHeightBetweenLevels() + curMaze.PLAYER_OFFSET.getY() * curMaze.getSquareSize());
+                    player.getPos().setY(curMaze.getPlayer().getCurLev() * curMaze.getHeightBetweenLevels() + AbstractMaze.PLAYER_OFFSET.getY() * curMaze.getSquareSize());
                 break;
             case KeyEvent.VK_P:
                 per = !per;
@@ -541,8 +530,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-        }
     }
     // </editor-fold>
 

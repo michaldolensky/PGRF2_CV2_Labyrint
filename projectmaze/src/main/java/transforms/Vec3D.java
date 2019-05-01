@@ -12,6 +12,7 @@ import java.util.Optional;
  * @version 2016
  */
 
+@SuppressWarnings("unused")
 public class Vec3D {
     private final double x, y, z;
 
@@ -184,17 +185,6 @@ public class Vec3D {
 
 
     /**
-     * Returns the result of applying the given quaternion to this vector
-     *
-     * @param q quaternion
-     * @return new Vec3D instance
-     */
-    public Vec3D mul(final Quat q) {
-        final Quat p = q.mulR(new Quat(0, x, y, z)).mulR(q.inverse());
-        return new Vec3D(p.i, p.j, p.k);
-    }
-
-    /**
      * Returns the result of element-wise multiplication with the given vector
      *
      * @param v 3D vector
@@ -254,7 +244,7 @@ public class Vec3D {
      *
      * @return double-precision floating point value
      */
-    public double length() {
+    private double length() {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
@@ -267,7 +257,7 @@ public class Vec3D {
      */
     @Override
     public boolean equals(Object obj) {
-        return (this == obj) || (obj != null) && (obj instanceof Vec3D)
+        return (this == obj) || (obj instanceof Vec3D)
                 && (new Double(((Vec3D) obj).getX()).equals(getX()))
                 && (new Double(((Vec3D) obj).getY()).equals(getY()))
                 && (new Double(((Vec3D) obj).getZ()).equals(getZ()));
@@ -292,7 +282,8 @@ public class Vec3D {
      * @return {@code true} if the objects are considered equal; {@code false}
      * otherwise.
      */
-    public boolean eEquals(Vec3D vec, double epsilon) {
+    @SuppressWarnings("SameParameterValue")
+    private boolean eEquals(Vec3D vec, double epsilon) {
         return (this == vec) || (vec != null)
                 && Compare.eEquals(getX(), vec.getX(), epsilon)
                 && Compare.eEquals(getY(), vec.getY(), epsilon)
@@ -321,14 +312,15 @@ public class Vec3D {
     }
 
     /**
-     * Returns String representation of this vector with coordinates formated
+     * Returns String representation of this vector with coordinates formatted
      * according to the given format, see
      * {@link java.lang.String#format(String, Object...)}
      *
      * @param format String format applied to each coordinate
      * @return comma separated floating-point values in brackets
      */
-    public String toString(String format) {
+    @SuppressWarnings("SameParameterValue")
+    private String toString(String format) {
         return String.format(Locale.US, "(" + format + "," + format + "," + format + ")",
                 x, y, z);
     }

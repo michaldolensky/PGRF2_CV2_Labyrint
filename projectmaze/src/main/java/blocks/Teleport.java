@@ -2,10 +2,10 @@ package blocks;
 
 import transforms.Point3D;
 
-public class Teleporter extends Hall{
-    private Point3D teleportTo;
+public class Teleport extends Hall{
+    private final Point3D teleportTo;
 
-    public Teleporter(int z, int y, int x) {
+    public Teleport(int z, int y, int x) {
         this.teleportTo = new Point3D(x, y, z);
         this.texD = 7;
         this.texU = 7;

@@ -2,7 +2,7 @@ package maze;
 
 import blocks.AbstractBlock;
 import blocks.Hall;
-import blocks.Teleporter;
+import blocks.Teleport;
 import blocks.Wall;
 import transforms.Point3D;
 
@@ -14,7 +14,7 @@ public class Maze1 extends AbstractMaze {
         AbstractBlock[][] level0 = new AbstractBlock[][]{
                 {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
                 {new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Wall()},
-                {new Wall(), new Teleporter(1, 1, 1), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Wall()},
+                {new Wall(), new Teleport(1, 1, 1), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Wall()},
                 {new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall()},
                 {new Wall(), new Hall(), new Wall(), new Wall(), new Hall(), new Wall(), new Hall(), new Wall(), new Hall(), new Wall()},
                 {new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall(), new Hall(), new Wall()},
@@ -26,7 +26,7 @@ public class Maze1 extends AbstractMaze {
         getLevels().add(level0);
         AbstractBlock[][] level1 = new AbstractBlock[][]{
                 {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
-                {new Wall(), new Hall(), new Teleporter(1, 0, 1), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Teleporter(1, 2, 1), new Wall()},
+                {new Wall(), new Hall(), new Teleport(1, 0, 1), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Teleport(1, 2, 1), new Wall()},
                 {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall(), new Hall(), new Wall()},
@@ -40,7 +40,7 @@ public class Maze1 extends AbstractMaze {
         AbstractBlock[][] level2 = new AbstractBlock[][]{
                 {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
                 {new Wall(), new Hall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
-                {new Wall(), new Teleporter(1, 0, 1), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
+                {new Wall(), new Teleport(1, 0, 1), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
                 {new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall(), new Wall()},

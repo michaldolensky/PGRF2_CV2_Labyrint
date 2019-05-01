@@ -11,6 +11,7 @@ import java.util.Optional;
  * @version 2016
  */
 
+@SuppressWarnings("ALL")
 public class Point2D {
     private final double x, y, w;
 
@@ -42,7 +43,7 @@ public class Point2D {
      * @param y homogeneous y coordinate
      * @param w homogeneous w coordinate
      */
-    public Point2D(final double x, final double y, final double w) {
+    private Point2D(final double x, final double y, final double w) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -247,7 +248,7 @@ public class Point2D {
      * @return {@code true} if the objects are considered equal; {@code false}
      * otherwise.
      */
-    public boolean eEquals(Point2D point, double epsilon) {
+    private boolean eEquals(Point2D point, double epsilon) {
         return (this == point) || (point != null)
                 && Compare.eEquals(getX(), point.getX(), epsilon)
                 && Compare.eEquals(getY(), point.getY(), epsilon)
@@ -276,14 +277,15 @@ public class Point2D {
     }
 
     /**
-     * Returns String representation of this point with coordinates formated
+     * Returns String representation of this point with coordinates formatted
      * according to the given format, see
      * {@link java.lang.String#format(String, Object...)}
      *
      * @param format String format applied to each coordinate
      * @return comma separated floating-point values in parentheses
      */
-    public String toString(final String format) {
+    @SuppressWarnings("SameParameterValue")
+    private String toString(final String format) {
         return String.format(Locale.US, "(" + format + "," + format + "," + format + ")", x, y, w);
     }
 }

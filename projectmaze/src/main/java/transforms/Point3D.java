@@ -45,7 +45,7 @@ public class Point3D {
      * @param z homogeneous z coordinate
      * @param w homogeneous w coordinate
      */
-    public Point3D(final double x, final double y, final double z, final double w) {
+    private Point3D(final double x, final double y, final double z, final double w) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -58,6 +58,7 @@ public class Point3D {
      *
      * @param v affine coordinates vector (vector from origin to the point)
      */
+    @SuppressWarnings("unused")
     public Point3D(final Vec3D v) {
         this.x = v.getX();
         this.y = v.getY();
@@ -70,6 +71,7 @@ public class Point3D {
      *
      * @param p homogeneous point to be cloned
      */
+    @SuppressWarnings("unused")
     public Point3D(final Point3D p) {
         this.x = p.x;
         this.y = p.y;
@@ -84,6 +86,7 @@ public class Point3D {
      * @param p homogeneous 2D point whose x,y,w will be cloned
      * @param z z coordinate to be attached
      */
+    @SuppressWarnings("unused")
     public Point3D(final Point2D p, final double z) {
         x = p.getX();
         y = p.getY();
@@ -97,6 +100,7 @@ public class Point3D {
      *
      * @param array double array of size 4 (asserted)
      */
+    @SuppressWarnings("unused")
     public Point3D(final double[] array) {
         assert (array.length >= 4);
         x = array[0];
@@ -161,6 +165,7 @@ public class Point3D {
      * @param x homogeneous x coordinate
      * @return new Point3D instance
      */
+    @SuppressWarnings("unused")
     public Point3D withX(double x) {
         return new Point3D(x, this.getY(), this.getZ(), this.getW());
     }
@@ -172,6 +177,7 @@ public class Point3D {
      * @param y homogeneous y coordinate
      * @return new Point3D instance
      */
+    @SuppressWarnings("unused")
     public Point3D withY(double y) {
         return new Point3D(this.getX(), y, this.getZ(), this.getW());
     }
@@ -183,6 +189,7 @@ public class Point3D {
      * @param z homogeneous z coordinate
      * @return new Point3D instance
      */
+    @SuppressWarnings("unused")
     public Point3D withZ(double z) {
         return new Point3D(this.getX(), this.getY(), z, this.getW());
     }
@@ -194,22 +201,11 @@ public class Point3D {
      * @param w homogeneous w coordinate
      * @return new Point3D instance
      */
+    @SuppressWarnings("unused")
     public Point3D withW(double w) {
         return new Point3D(this.getX(), this.getY(), this.getZ(), w);
     }
 
-
-    /**
-     * Returns the result of applying the given quaternion to the affine 3D
-     * point defined by this point if possible (the point is not in infinity),
-     * empty Optional otherwise
-     *
-     * @param q quaternion
-     * @return new Optional<Point3D> instance
-     */
-    public Optional<Point3D> mul(final Quat q) {
-        return dehomog().map(affinePoint -> new Point3D(affinePoint.mul(q)));
-    }
 
     /**
      * Returns the result of element-wise summation with the given homogeneous
@@ -229,6 +225,7 @@ public class Point3D {
         this.x += px;
     }
 
+    @SuppressWarnings("unused")
     public void addY(final double py) {
         this.y += py;
     }
@@ -253,6 +250,7 @@ public class Point3D {
         this.x -= px;
     }
 
+    @SuppressWarnings("unused")
     public void subY(final double py) {
         this.y -= py;
     }
@@ -279,6 +277,7 @@ public class Point3D {
      *
      * @return new Optional<Vec3D> instance
      */
+    @SuppressWarnings("unused")
     public Optional<Vec3D> dehomog() {
         if (w == 0.0)
             return Optional.empty();
@@ -291,6 +290,7 @@ public class Point3D {
      *
      * @return new Vec3D instance
      */
+    @SuppressWarnings("unused")
     public Vec3D ignoreW() {
         return new Vec3D(x, y, z);
     }
@@ -304,7 +304,7 @@ public class Point3D {
      */
     @Override
     public boolean equals(Object obj) {
-        return (this == obj) || (obj != null) && (obj instanceof Point3D)
+        return (this == obj) || (obj instanceof Point3D)
                 && (new Double(((Point3D) obj).getX()).equals(getX()))
                 && (new Double(((Point3D) obj).getY()).equals(getY()))
                 && (new Double(((Point3D) obj).getZ()).equals(getZ()))
@@ -330,7 +330,8 @@ public class Point3D {
      * @return {@code true} if the objects are considered equal; {@code false}
      * otherwise.
      */
-    public boolean eEquals(Point3D point, double epsilon) {
+    @SuppressWarnings("SameParameterValue")
+    private boolean eEquals(Point3D point, double epsilon) {
         return (this == point) || (point != null)
                 && Compare.eEquals(getX(), point.getX(), epsilon)
                 && Compare.eEquals(getY(), point.getY(), epsilon)
@@ -345,6 +346,7 @@ public class Point3D {
      * @return {@code true} if the objects are considered equal; {@code false}
      * otherwise.
      */
+    @SuppressWarnings("unused")
     public boolean eEquals(Point3D point) {
         return eEquals(point, Compare.EPSILON);
     }
@@ -360,14 +362,15 @@ public class Point3D {
     }
 
     /**
-     * Returns String representation of this point with coordinates formated
+     * Returns String representation of this point with coordinates formatted
      * according to the given format, see
      * {@link java.lang.String#format(String, Object...)}
      *
      * @param format String format applied to each coordinate
      * @return comma separated floating-point values in parentheses, useful in constructor
      */
-    public String toString(final String format) {
+    @SuppressWarnings("SameParameterValue")
+    private String toString(final String format) {
         return String.format(Locale.US, "(" + format + "," + format + "," + format + "," + format + ")", x, y, z, w);
     }
 }

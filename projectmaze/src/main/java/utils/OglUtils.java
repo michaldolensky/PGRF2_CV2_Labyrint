@@ -7,6 +7,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 import java.awt.*;
 
+@SuppressWarnings({"Duplicates", "unused"})
 public class OglUtils {
 
 	public static void printOGLparameters(GL2 gl) {
@@ -19,7 +20,8 @@ public class OglUtils {
 		System.out.println("GL_EXTENSIONS " + gl.glGetString(GL2.GL_EXTENSIONS));
 	}
 
-	public static void drawStr(GLAutoDrawable glDrawable, float x, float y, float z, String s) {
+	@SuppressWarnings("SameParameterValue")
+	private static void drawStr(GLAutoDrawable glDrawable, float x, float y, float z, String s) {
 		if (glDrawable == null)
 			return;
 		GL2 gl = glDrawable.getGL().getGL2();
