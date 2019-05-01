@@ -1,7 +1,5 @@
 package blocks;
 
-import com.jogamp.opengl.util.texture.Texture;
-
 public class AbstractBlock{
     int texN;
     int texE;
@@ -10,15 +8,10 @@ public class AbstractBlock{
     int texU;
     int texD;
     boolean collision = false;
-    boolean createWall = false;
 
 
     public boolean hasCollision() {
         return collision;
-    }
-
-    public boolean isCreateWall() {
-        return createWall;
     }
 
     public int getTexN() {

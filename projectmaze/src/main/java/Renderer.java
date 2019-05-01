@@ -148,7 +148,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         // </editor-fold>
 
         /* make the objects */
-        // <editor-fold defaultstate="collapsed" desc=" Objects Generation ">
+        // <editor-fold defaultstate="collapsed" desc="Static Objects Generation">
 
         // <editor-fold defaultstate="collapsed" desc=" Maze ">
         if (0 >= maze) {
@@ -181,39 +181,23 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                     int YPS = y + size;
                     AbstractBlock b = level[z][x];
 
-
-
                     if (b instanceof Hall) {
+                        //Down
                         if (texture.get(b.getTexD()) != null) {
                             texture.get(b.getTexD()).enable(gl);
                             texture.get(b.getTexD()).bind(gl);
                             DS.drawFloor(gl, ZS0, XS0, y, ZSS, XSS);
                             texture.get(b.getTexU()).disable(gl);
                         }
+                        //Up
                         if (texture.get(b.getTexU()) != null) {
                             texture.get(b.getTexU()).enable(gl);
                             texture.get(b.getTexU()).bind(gl);
                             DS.drawCeiling(gl, ZS0, XS0, YPS, ZSS, XSS);
                             texture.get(b.getTexU()).disable(gl);
                         }
-                    }
-                    if (b instanceof Teleporter) {
-                        if (texture.get(b.getTexD()) != null) {
-                            texture.get(b.getTexD()).enable(gl);
-                            texture.get(b.getTexD()).bind(gl);
-                            DS.drawFloor(gl, ZS0, XS0, y, ZSS, XSS);
-                            texture.get(b.getTexD()).disable(gl);
-                        }
-                        if (texture.get(b.getTexU()) != null) {
-                            texture.get(b.getTexU()).enable(gl);
-                            texture.get(b.getTexU()).bind(gl);
-                            DS.drawCeiling(gl, ZS0, XS0, YPS, ZSS, XSS);
-                            texture.get(b.getTexU()).disable(gl);
-                        }
-                    }
-                    if (b instanceof Wall) {
                         //north - cyan - wood
-                        if (z + 1 < level.length && level[z + 1][x].isCreateWall()) {
+                        if (level[z - 1][x] instanceof Wall) {
                             if (texture.get(b.getTexN()) != null) {
                                 texture.get(b.getTexN()).enable(gl);
                                 texture.get(b.getTexN()).bind(gl);
@@ -222,74 +206,83 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(0.0f, 1.0f, 1.0f);
                                 gl.glTexCoord2f(4, 0);
-                                gl.glVertex3i(ZS0, y, XSS);
-                                gl.glTexCoord2f(0, 0);
-                                gl.glVertex3i(ZSS, y, XSS);
-                                gl.glTexCoord2f(0, 4);
-                                gl.glVertex3i(ZSS, YPS, XSS);
+                                gl.glVertex3i(ZSS, y, XS0);
                                 gl.glTexCoord2f(4, 4);
-                                gl.glVertex3i(ZS0, YPS, XSS);
+                                gl.glVertex3i(ZSS, YPS, XS0);
+                                gl.glTexCoord2f(0, 4);
+                                gl.glVertex3i(ZS0, YPS, XS0);
+                                gl.glTexCoord2f(0, 0);
+                                gl.glVertex3i(ZS0, y, XS0);
                                 gl.glEnd();
                                 texture.get(b.getTexN()).disable(gl);
                             }
                         }
                         //south - magenta - bricks
-                        if (z - 1 > -1 && level[z - 1][x].isCreateWall()) {
+                        if (level[z + 1][x] instanceof Wall) {
                             if (texture.get(b.getTexS()) != null) {
                                 texture.get(b.getTexS()).enable(gl);
                                 texture.get(b.getTexS()).bind(gl);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(1.0f, 0.0f, 1.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3i(ZS0, YPS, XS0);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3i(ZSS, YPS, XS0);
-                                gl.glTexCoord2f(1, 0);
-                                gl.glVertex3i(ZSS, y, XS0);
+                                gl.glTexCoord2f(2, 2);
+                                gl.glVertex3i(ZSS, YPS, XSS);
+                                gl.glTexCoord2f(2, 0);
+                                gl.glVertex3i(ZSS, y, XSS);
                                 gl.glTexCoord2f(0, 0);
-                                gl.glVertex3i(ZS0, y, XS0);
+                                gl.glVertex3i(ZS0, y, XSS);
+                                gl.glTexCoord2f(0, 2);
+                                gl.glVertex3i(ZS0, YPS, XSS);
                                 gl.glEnd();
                                 texture.get(b.getTexS()).disable(gl);
                             }
                         }
                         //east - green -- cobble
-                        if (x - 1 > -1 && level[z][x - 1].isCreateWall()) {
+                        if (level[z][x + 1] instanceof Wall) {
                             if (texture.get(b.getTexE()) != null) {
                                 texture.get(b.getTexE()).enable(gl);
                                 texture.get(b.getTexE()).bind(gl);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(0.0f, 1.0f, 0.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3i(ZS0, y, XS0);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3i(ZS0, y, XSS);
                                 gl.glTexCoord2f(1, 0);
-                                gl.glVertex3i(ZS0, YPS, XSS);
+                                gl.glVertex3i(ZSS, y, XSS);
+                                gl.glTexCoord2f(1, 1);
+                                gl.glVertex3i(ZSS, YPS, XSS);
+                                gl.glTexCoord2f(0, 1);
+                                gl.glVertex3i(ZSS, YPS, XS0);
                                 gl.glTexCoord2f(0, 0);
-                                gl.glVertex3i(ZS0, YPS, XS0);
+                                gl.glVertex3i(ZSS, y, XS0);
                                 gl.glEnd();
                                 texture.get(b.getTexE()).disable(gl);
                             }
                         }
                         //west - yellow - blue_concrete_powder
-                        if (x + 1 < level.length && level[z][x + 1].isCreateWall()) {
+                        if (level[z][x - 1] instanceof Wall) {
                             if (texture.get(b.getTexW()) != null) {
                                 texture.get(b.getTexW()).enable(gl);
                                 texture.get(b.getTexW()).bind(gl);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+                                gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
                                 gl.glBegin(GL2.GL_QUADS);
                                 gl.glColor3f(1.0f, 1.0f, 0.0f);
-                                gl.glTexCoord2f(0, 1);
-                                gl.glVertex3i(ZSS, YPS, XS0);
-                                gl.glTexCoord2f(1, 1);
-                                gl.glVertex3i(ZSS, YPS, XSS);
                                 gl.glTexCoord2f(1, 0);
-                                gl.glVertex3i(ZSS, y, XSS);
+                                gl.glVertex3i(ZS0, YPS, XSS);
+                                gl.glTexCoord2f(1, 1);
+                                gl.glVertex3i(ZS0, y, XSS);
+                                gl.glTexCoord2f(0, 1);
+                                gl.glVertex3i(ZS0, y, XS0);
                                 gl.glTexCoord2f(0, 0);
-                                gl.glVertex3i(ZSS, y, XS0);
+                                gl.glVertex3i(ZS0, YPS, XS0);
                                 gl.glEnd();
                                 texture.get(b.getTexW()).disable(gl);
                             }
+
                         }
+                    }
+                    if (b instanceof Wall) {
 //                        //top of wall
 //                        if (texture.get(5) != null) {
 //                            texture.get(5).enable(gl);

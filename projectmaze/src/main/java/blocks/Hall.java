@@ -3,7 +3,6 @@ package blocks;
 public class Hall extends AbstractBlock {
 
     public Hall() {
-        createWall = true;
         this.texN = 1;
         this.texE = 3;
         this.texS = 2;

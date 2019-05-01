@@ -6,7 +6,6 @@ public class Teleporter extends Hall{
     private Point3D teleportTo;
 
     public Teleporter(int z, int y, int x) {
-        createWall = true;
         this.teleportTo = new Point3D(x, y, z);
         this.texD = 7;
         this.texU = 7;
