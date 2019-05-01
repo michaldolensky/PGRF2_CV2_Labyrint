@@ -45,9 +45,9 @@ public class Maze1 extends AbstractMaze {
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Wall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall(), new Hall(), new Hall(), new Wall()},
-                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Hall()},
+                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Wall()},
                 {new Wall(), new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Wall(), new Wall(), new Wall(), new Wall()},
-                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Hall(), new Hall(), new Hall(), new Hall(), new Hall()},
+                {new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall(), new Wall()},
         };
         getLevels().add(level2);
         getPlayer().setCurrentLevel(0);
