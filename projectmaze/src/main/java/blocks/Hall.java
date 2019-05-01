@@ -3,12 +3,12 @@ package blocks;
 public class Hall extends AbstractBlock {
 
     public Hall() {
-        this.texN = 1;
-        this.texE = 3;
-        this.texS = 2;
-        this.texW = 4;
-        this.texU = 6;
-        this.texD = 0;
+        this.texN = 101;
+        this.texE = 102;
+        this.texS = 103;
+        this.texW = 104;
+        this.texU = 105;
+        this.texD = 106;
     }
 
     public Hall(int texN, int texE, int texS, int texW, int texU, int texD) {

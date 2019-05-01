@@ -1,7 +1,4 @@
-import blocks.AbstractBlock;
-import blocks.Hall;
-import blocks.Teleport;
-import blocks.Wall;
+import blocks.*;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -20,6 +17,8 @@ import java.awt.event.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -37,6 +36,8 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 
     private boolean per = true, free = false;
     private long oldmils = System.currentTimeMillis();
+    private long startTime;
+
 
     private HashMap<Integer, Texture> texture;
     private final AbstractMaze curMaze;
@@ -46,16 +47,17 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
     //fixme:
     private boolean fog = false;
     private float[] light_position;
+    private Long finishTime;
 
     public Renderer(AbstractMaze maze) {
         curMaze = maze;
         curMaze.resetPlayer();
         player = curMaze.getPlayer();
+        startTime = System.currentTimeMillis();
     }
 
 
     @Override
-    //fixme remove
     public void init(GLAutoDrawable glDrawable) {
         GL2 gl = glDrawable.getGL().getGL2();
         glu = new GLU();
@@ -405,8 +407,19 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
             if (curMaze.getCurrentBlockAtPlayerLocation() instanceof Teleport) {
                 OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Teleport [E]", 20);
             }
+            if (curMaze.getCurrentBlockAtPlayerLocation() instanceof Finish) {
+                if (finishTime == null) finishTime = System.currentTimeMillis();
+                OglUtils.drawStr2D(glDrawable, width / 2, height / 3, "Finished. Time: " + getTime(finishTime - startTime), 25);
+            }
         }
 
+        if (finishTime == null) {
+            OglUtils.drawStr2D(glDrawable, width -100, height-20, "Time: " + getTime(System.currentTimeMillis() - startTime), 15);
+        }else {
+            OglUtils.drawStr2D(glDrawable, width -200, height-20, "Finished. Time: " + getTime(finishTime - startTime), 15);
+        }
+
+        OglUtils.drawStr2D(glDrawable, width - 590, 3, player.getLookString());
         OglUtils.drawStr2D(glDrawable, 3, height - 20, text);
         OglUtils.drawStr2D(glDrawable, 90, 3, " (c) Michal Dolenský 2019 | Textures:  © 2016 Sapix");
         OglUtils.drawStr2D(glDrawable, width - 590, 3, player.getLookString());
@@ -414,6 +427,11 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 
 
         // </editor-fold>
+    }
+
+    private String getTime(long mills) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        return formatter.format(new Timestamp(mills - 3600 * 1000));
     }
 
     @Override
@@ -501,7 +519,6 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
     }
 
 
-    //fixme
     @Override
     public void mouseMoved(MouseEvent e) {
     }
