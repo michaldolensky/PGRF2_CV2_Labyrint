@@ -69,9 +69,9 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc=" Light">
         //spotlight
-        float[] spot_ambient = {1f, 1f, 1f, 1.0f};
-        float[] spot_diffuse = {0.0f, 0.0f, 0.0f, 1.0f};
-        float[] spot_specular = {1f, 1f, 1f, 1.0f};
+        float spot_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+        float spot_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
+        float spot_specular[] = {0.8f, 0.8f, 0.8f, 1.0f};
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, spot_ambient, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, spot_diffuse, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spot_specular, 0);
@@ -86,6 +86,14 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, fix_specula, 0);
         gl.glEnable(GL2.GL_LIGHT1);
 
+        float amb[] = {0.3f, 0.3f, 0.0f, 1.0f};
+        float diff[] = {1.0f, 1.0f, 0.5f, 1.0f};
+        float spec[] = {0.6f, 0.6f, 0.5f, 1.0f};
+        float shine = 0.25f;
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, amb, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, diff, 0);
+        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, spec, 0);
+        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, shine * 128.0f);
         // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc=" Texture loading ">
@@ -275,25 +283,6 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 
                         }
                     }
-//                    if (b instanceof Wall) {
-//                        //top of wall
-//                        if (texture.get(5) != null) {
-//                            texture.get(5).enable(gl);
-//                            texture.get(5).bind(gl);
-//                            gl.glBegin(GL2.GL_QUADS);
-//                            gl.glColor3f(1.0f, 0.0f, 0.0f);
-//                            gl.glTexCoord2f(0, 1);
-//                            gl.glVertex3i(ZS0, YPS, XS0);
-//                            gl.glTexCoord2f(1, 1);
-//                            gl.glVertex3i(ZSS, YPS, XS0);
-//                            gl.glTexCoord2f(1, 0);
-//                            gl.glVertex3i(ZSS, YPS, XSS);
-//                            gl.glTexCoord2f(0, 0);
-//                            gl.glVertex3i(ZS0, YPS, XSS);
-//                            gl.glEnd();
-//                            texture.get(5).disable(gl);
-//                        }
-//                    }
                 }
             }
             y += curMaze.getHeightBetweenLevels();
@@ -332,7 +321,7 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 
         float[] spot_position = {(float) player.getPX(), (float) player.getPY(), (float) player.getPZ(), 1.0f};
         float[] spot_direction = {(float) player.getEx(), (float) player.getEy(), (float) player.getEz()};
-        float spot_angle = 35f;
+        float spot_angle = 20f;
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, spot_position, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPOT_DIRECTION, spot_direction, 0);
         gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, spot_angle);
@@ -396,9 +385,9 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         }
 
         if (finishTime == null) {
-            OglUtils.drawStr2D(glDrawable, width -100, height-20, "Time: " + getTime(System.currentTimeMillis() - startTime), 15);
-        }else {
-            OglUtils.drawStr2D(glDrawable, width -200, height-20, "Finished. Time: " + getTime(finishTime - startTime), 15);
+            OglUtils.drawStr2D(glDrawable, width - 100, height - 20, "Time: " + getTime(System.currentTimeMillis() - startTime), 15);
+        } else {
+            OglUtils.drawStr2D(glDrawable, width - 200, height - 20, "Finished. Time: " + getTime(finishTime - startTime), 15);
         }
 
         OglUtils.drawStr2D(glDrawable, width - 590, 3, player.getLookString());
