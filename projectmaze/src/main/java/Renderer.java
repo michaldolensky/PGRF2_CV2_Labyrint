@@ -69,9 +69,9 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
 // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc=" Light">
         //spotlight
-        float spot_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
-        float spot_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
-        float spot_specular[] = {0.8f, 0.8f, 0.8f, 1.0f};
+        float[] spot_ambient = {0.2f, 0.2f, 0.2f, 1.0f};
+        float[] spot_diffuse = {0.8f, 0.8f, 0.8f, 1.0f};
+        float[] spot_specular = {0.8f, 0.8f, 0.8f, 1.0f};
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, spot_ambient, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, spot_diffuse, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, spot_specular, 0);
@@ -86,14 +86,13 @@ class Renderer implements GLEventListener, MouseListener, MouseMotionListener, K
         gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, fix_specula, 0);
         gl.glEnable(GL2.GL_LIGHT1);
 
-        float amb[] = {0.3f, 0.3f, 0.0f, 1.0f};
-        float diff[] = {1.0f, 1.0f, 0.5f, 1.0f};
-        float spec[] = {0.6f, 0.6f, 0.5f, 1.0f};
-        float shine = 0.25f;
+        float[] amb = {0.3f, 0.3f, 0.0f, 1.0f};
+        float[] diff = {1.0f, 1.0f, 0.5f, 1.0f};
+        float[] spec = {0.6f, 0.6f, 0.5f, 1.0f};
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, amb, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, diff, 0);
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, spec, 0);
-        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, shine * 128.0f);
+        gl.glMaterialf(GL2.GL_FRONT, GL2.GL_SHININESS, 0.25f * 128.0f);
         // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc=" Texture loading ">
